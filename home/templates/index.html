@@ -34,7 +34,7 @@
           <a href="#" class="text-sm font-semibold leading-6 text-gray-200">About</a>
         </div>
         <div class="hidden lg:flex lg:flex-1 lg:justify-end">
-          <a href="#" class="text-sm font-semibold leading-6 text-gray-200">Log in <span aria-hidden="true">&rarr;</span></a>
+          <a href="{% url 'admin:index' %}" class="text-sm font-semibold leading-6 text-gray-200">Log in <span aria-hidden="true">&rarr;</span></a>
         </div>
       </nav>
       <!-- Mobile menu, show/hide based on menu open state. -->
@@ -47,7 +47,7 @@
                 <a href="#" class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-200 hover:bg-gray-50">About</a>
               </div>
               <div class="py-6">
-                <a href="#" class="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">Log in</a>
+                <a href="{% url 'admin:index' %}" class="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">Log in</a>
               </div>
             </div>
     </header>
@@ -63,7 +63,7 @@
           <h1 class="t font-bold tracking-tight text-gray-300 text-2xl lg:text-4xl">Change Your Restaurant with<br><span class="font-bold tracking-tight text-white text-6xl"> Smart QR Menus</span></h1>
           <p class="mt-6 text-lg leading-8 text-gray-600">Take your restaurant to the next level with our cutting-edge QR code menus. Easily manage and update your menu items with our intuitive admin panel, giving your customers a seamless dining experience.</p>
           <div class="mt-10 flex items-center justify-center gap-x-6">
-            <a href="{% url 'admin:index' %}" class="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Get started</a>
+            <a href="#" class="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Get started</a>
           </div>
         </div>
       </div>
