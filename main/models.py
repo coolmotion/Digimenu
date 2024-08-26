@@ -31,9 +31,12 @@ class Menu(models.Model):
 	name = models.CharField(max_length=50)
 
 	def __str__(self):
-		username_capitalized = self.user.username.capitalize()
-		name_capitalized = self.name.capitalize()
-		return f"{username_capitalized} {name_capitalized}"
+		profile = Profile.objects.get(user=self.user)  # Get the Profile associated with the User
+		restaurant_name = profile.resturant_name.capitalize()  # Capitalize the restaurant name
+		menu_name = self.name.capitalize()  # Capitalize the menu name
+		return f"{restaurant_name} {menu_name}"
+
+         
 
 
 
