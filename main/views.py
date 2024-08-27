@@ -3,8 +3,8 @@ from .models import Profile,Menu, Product
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 
-def index (request):
-    return render(request, 'index.html', {})
+# def index (request):
+#     return render(request, 'index.html', {})
 
 def hello_restaurant(request, resturant_name):
     # Retrieve the profile associated with the restaurant name
