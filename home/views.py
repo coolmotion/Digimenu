@@ -46,7 +46,7 @@ def signup(request):
             if user is not None:
                 login(request, user)
                 messages.success(request, "Your account was created...")
-                return redirect('signup_thanks')
+                return redirect('dashboard')
             else:
                 messages.error(request, "Authentication failed, please try again.")
         else:
@@ -71,3 +71,6 @@ def contact(request):
 def about(request):
     messages.error(request, "This page is under construction.")
     return redirect('home')
+
+def dashboard(request):
+    return render(request, 'dashboard.html', )
