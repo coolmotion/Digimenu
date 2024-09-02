@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html :class="{ 'theme-dark': dark }" x-data="data()" lang="en">
   <head>
@@ -13,7 +14,7 @@
       src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js"
       defer
     ></script>
-    <script src="./assets/js/init-alpine.js"></script>
+    <script src="{% static '/assets/js/init-alpine.js' %}"></script>
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.css"
@@ -22,13 +23,14 @@
       src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"
       defer
     ></script>
-    <script src="./assets/js/charts-lines.js" defer></script>
-    <script src="./assets/js/charts-pie.js" defer></script>
+    <!-- <script src="{% static 'assets/js/charts-lines.js' %}" defer></script>
+    <script src="{% static 'assets/js/charts-pie.js' %}" defer></script> -->
+
   </head>
   <body>
     <div
       class="flex h-screen bg-gray-50 dark:bg-zinc-950"
-     
+      :class="{ 'overflow-hidden': isSideMenuOpen }"
     >
       <!-- Desktop sidebar -->
       <aside
@@ -128,7 +130,7 @@
       </aside>
       <!-- Mobile sidebar -->
       <!-- Backdrop -->
-      <!-- <div
+      <div
         x-show="isSideMenuOpen"
         x-transition:enter="transition ease-in-out duration-150"
         x-transition:enter-start="opacity-0"
@@ -137,7 +139,7 @@
         x-transition:leave-start="opacity-100"
         x-transition:leave-end="opacity-0"
         class="fixed inset-0 z-10 flex items-end bg-black bg-opacity-50 sm:items-center sm:justify-center"
-      ></div> -->
+      ></div>
       <aside
         class="fixed inset-y-0 z-20 flex-shrink-0 w-64 mt-16 overflow-y-auto bg-white dark:bg-black md:hidden"
         x-show="isSideMenuOpen"
@@ -331,7 +333,7 @@
                   ></path>
                 </svg>
               </button>
-              <!-- <template x-if="isPagesMenuOpen">
+              <template x-if="isPagesMenuOpen">
                 <ul
                   x-transition:enter="transition-all ease-in-out duration-300"
                   x-transition:enter-start="opacity-25 max-h-0"
@@ -372,7 +374,7 @@
                     <a class="w-full" href="pages/blank.html">Blank</a>
                   </li>
                 </ul>
-              </template> -->
+              </template>
             </li>
           </ul>
           <div class="px-6 my-6">
@@ -497,7 +499,7 @@
                     class="absolute top-0 right-0 inline-block w-3 h-3 transform translate-x-1 -translate-y-1 bg-red-600 border-2 border-white rounded-full dark:border-blabg-black"
                   ></span>
                 </button>
-                <!-- <template x-if="isNotificationsMenuOpen">
+                <template x-if="isNotificationsMenuOpen">
                   <ul
                     x-transition:leave="transition ease-in duration-150"
                     x-transition:leave-start="opacity-100"
@@ -541,7 +543,7 @@
                       </a>
                     </li>
                   </ul>
-                </template> -->
+                </template>
               </li>
               <!-- Profile menu -->
               <li class="relative">
@@ -554,7 +556,7 @@
                 >
                   <img
                     class="object-cover w-8 h-8 rounded-full"
-                    src=""
+                    src="https://images.unsplash.com/photo-1502378735452-bc7d86632805?ixlib=rb-0.3.5&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=200&fit=max&s=aa3a807e1bbdfd4364d1f449eaa96d82"
                     alt=""
                     aria-hidden="true"
                   />
@@ -751,8 +753,7 @@
                     >
                       <th class="px-4 py-3">Item</th>
                       <th class="px-4 py-3">Price</th>
-                      <th class="px-4 py-3">Status</th>
-                      <th class="px-4 py-3">Date</th>
+                      <th class="px-4 py-3 hidden md:block">Status</th>
                       <th class="px-4 py-3">Actions</th>
                     </tr>
                   </thead>
@@ -788,15 +789,12 @@
                       <td class="px-4 py-3 text-sm">
                         $ 863.45
                       </td>
-                      <td class="px-4 py-3 text-xs">
+                      <td class="px-4 py-3 text-xs hidden md:block">
                         <span
                           class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-gray-900 dark:text-gray-100"
                         >
                           Avalabile
                         </span>
-                      </td>
-                      <td class="px-4 py-3 text-sm">
-                        6/10/2020
                       </td>
                       <td class="px-4 py-3">
                         <div class="flex items-center space-x-4 text-sm">
@@ -864,16 +862,13 @@
                       <td class="px-4 py-3 text-sm">
                         $ 863.45
                       </td>
-                      <td class="px-4 py-3 text-xs">
+                      <td class="px-4 py-3 text-xs hidden md:block">
                         <span
                           class="px-2 py-1 font-semibold leading-tight text-red-700 bg-red-100 rounded-full dark:text-red-100 dark:bg-red-700"
                         >
                           Not avalabile
                         </span>
                       </td>
-                      <td class="px-4 py-3 text-sm">
-                        6/10/2020
-                      </td>
                       <td class="px-4 py-3">
                         <div class="flex items-center space-x-4 text-sm">
                           <button
@@ -940,15 +935,12 @@
                       <td class="px-4 py-3 text-sm">
                         $ 863.45
                       </td>
-                      <td class="px-4 py-3 text-xs">
+                      <td class="px-4 py-3 text-xs hidden md:block">
                         <span
                           class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-gray-900 dark:text-gray-100"
                         >
                           Avalabile
                         </span>
-                      </td>
-                      <td class="px-4 py-3 text-sm">
-                        6/10/2020
                       </td>
                       <td class="px-4 py-3">
                         <div class="flex items-center space-x-4 text-sm">
@@ -1017,15 +1009,12 @@
                       <td class="px-4 py-3 text-sm">
                         $ 863.45
                       </td>
-                      <td class="px-4 py-3 text-xs">
+                      <td class="px-4 py-3 text-xs hidden md:block">
                         <span
                           class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-gray-900 dark:text-gray-100"
                         >
                           Avalabile
                         </span>
-                      </td>
-                      <td class="px-4 py-3 text-sm">
-                        6/10/2020
                       </td>
                       <td class="px-4 py-3">
                         <div class="flex items-center space-x-4 text-sm">
@@ -1093,15 +1082,12 @@
                       <td class="px-4 py-3 text-sm">
                         $ 863.45
                       </td>
-                      <td class="px-4 py-3 text-xs">
+                      <td class="px-4 py-3 text-xs hidden md:block">
                         <span
                           class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-gray-900 dark:text-gray-100"
                         >
                           Avalabile
                         </span>
-                      </td>
-                      <td class="px-4 py-3 text-sm">
-                        6/10/2020
                       </td>
                       <td class="px-4 py-3">
                         <div class="flex items-center space-x-4 text-sm">
@@ -1170,15 +1156,12 @@
                       <td class="px-4 py-3 text-sm">
                         $ 863.45
                       </td>
-                      <td class="px-4 py-3 text-xs">
+                      <td class="px-4 py-3 text-xs hidden md:block">
                         <span
                           class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-gray-900 dark:text-gray-100"
                         >
                           Avalabile
                         </span>
-                      </td>
-                      <td class="px-4 py-3 text-sm">
-                        6/10/2020
                       </td>
                       <td class="px-4 py-3">
                         <div class="flex items-center space-x-4 text-sm">
@@ -1247,15 +1230,12 @@
                       <td class="px-4 py-3 text-sm">
                         $ 863.45
                       </td>
-                      <td class="px-4 py-3 text-xs">
+                      <td class="px-4 py-3 text-xs hidden md:block">
                         <span
                           class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-gray-900 dark:text-gray-100"
                         >
                           Avalabile
                         </span>
-                      </td>
-                      <td class="px-4 py-3 text-sm">
-                        6/10/2020
                       </td>
                       <td class="px-4 py-3">
                         <div class="flex items-center space-x-4 text-sm">
@@ -1323,15 +1303,12 @@
                       <td class="px-4 py-3 text-sm">
                         $ 863.45
                       </td>
-                      <td class="px-4 py-3 text-xs">
+                      <td class="px-4 py-3 text-xs hidden md:block">
                         <span
                           class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-gray-900 dark:text-gray-100"
                         >
                           Avalabile
                         </span>
-                      </td>
-                      <td class="px-4 py-3 text-sm">
-                        6/10/2020
                       </td>
                       <td class="px-4 py-3">
                         <div class="flex items-center space-x-4 text-sm">
@@ -1399,16 +1376,13 @@
                       <td class="px-4 py-3 text-sm">
                         $ 863.45
                       </td>
-                      <td class="px-4 py-3 text-xs">
+                      <td class="px-4 py-3 text-xs hidden md:block">
                         <span
                           class="px-2 py-1 font-semibold leading-tight text-red-700 bg-red-100 rounded-full dark:text-red-100 dark:bg-indigo-700"
                         >
                           Comming Soon
                         </span>
                       </td>
-                      <td class="px-4 py-3 text-sm">
-                        6/10/2020
-                      </td>
                       <td class="px-4 py-3">
                         <div class="flex items-center space-x-4 text-sm">
                           <button
@@ -1476,15 +1450,12 @@
                       <td class="px-4 py-3 text-sm">
                         $ 863.45
                       </td>
-                      <td class="px-4 py-3 text-xs">
+                      <td class="px-4 py-3 text-xs hidden md:block">
                         <span
                           class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-gray-900 dark:text-gray-100"
                         >
                           Avalabile
                         </span>
-                      </td>
-                      <td class="px-4 py-3 text-sm">
-                        6/10/2020
                       </td>
                       <td class="px-4 py-3">
                         <div class="flex items-center space-x-4 text-sm">
@@ -1557,7 +1528,7 @@
                       </li>
                       <li>
                         <button
-                          class="px-3 py-1 rounded-md focus:outline-none focus:shadow-outline-purple"
+                          class="px-3 py-1 text-white transition-colors duration-150 bg-purple-600 border border-r-0 border-purple-600 rounded-md focus:outline-none focus:shadow-outline-purple"
                         >
                           1
                         </button>
@@ -1571,7 +1542,7 @@
                       </li>
                       <li>
                         <button
-                          class="px-3 py-1 text-white transition-colors duration-150 bg-purple-600 border border-r-0 border-purple-600 rounded-md focus:outline-none focus:shadow-outline-purple"
+                          class="px-3 py-1 rounded-md focus:outline-none focus:shadow-outline-purple"
                         >
                           3
                         </button>
