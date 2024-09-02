@@ -10,9 +10,11 @@ from django.shortcuts import get_object_or_404
 @login_required
 def dashboard(request):
     profile = get_object_or_404(Profile, user=request.user)
+
     menus = Menu.objects.filter(user=profile.user)
     context = {
         'restaurant_name': profile.resturant_name,
+        'restaurant_image': profile.image,
         'menus': []
     }
     for menu in menus:
@@ -21,7 +23,6 @@ def dashboard(request):
             'products': []
         }
         
-        # Retrieve all products associated with this menu
         products = Product.objects.filter(menu=menu)
         
         for product in products:
