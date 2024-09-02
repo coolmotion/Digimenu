@@ -5,7 +5,6 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
 from .froms import SignUpForm
-from django.urls import reverse
 
 # Create your views here.
 def index(request):
@@ -20,7 +19,7 @@ def login_user(request):
         
         if user is not None:
             login(request, user)
-            return redirect(reverse('admin:index'))  # Redirect to the homepage or dashboard
+            return redirect('dashboard')  # Redirect to the homepage or dashboard
         else:
             messages.error(request, "Invalid username or password. Please try again.")
             return redirect('login')  # Redirect back to the login page
@@ -71,6 +70,3 @@ def contact(request):
 def about(request):
     messages.error(request, "This page is under construction.")
     return redirect('home')
-
-def dashboard(request):
-    return render(request, 'dashboard.html', )
