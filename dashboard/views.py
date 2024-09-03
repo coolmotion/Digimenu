@@ -6,7 +6,6 @@ from django.contrib.auth.decorators import login_required
 from main.models import Profile,Menu, Product
 from django.shortcuts import get_object_or_404
 
-
 @login_required
 def dashboard(request, menu_id=None):
     profile = get_object_or_404(Profile, user=request.user)
@@ -39,6 +38,25 @@ def product_info(request, product_id=None):
     if product_id is not None:
 
         product = get_object_or_404(Product, id=product_id)
+
+        if request.method == 'POST':
+            new_name = request.POST.get('name')
+            new_description = request.POST.get('description')
+            new_price = request.POST.get('price')
+
+            if new_name:
+                product.name = new_name
+
+            if new_description:
+                product.description = new_description
+            
+            if new_price:
+                product.price = new_price
+                print(new_price)
+
+            product.save()
+            messages.error(request, "This page is under construction.")
+
 
         context = {
             'name': product.name,
