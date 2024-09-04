@@ -8,9 +8,13 @@ from .froms import SignUpForm
 
 # Create your views here.
 def index(request):
+    if request.user.is_authenticated:
+        return redirect('dashboard') 
     return render(request, 'index.html', )
 
 def login_user(request):
+    if request.user.is_authenticated:
+        return redirect('dashboard') 
     if request.method == "POST":
         username = request.POST.get('username')
         password = request.POST.get('password')
@@ -33,6 +37,8 @@ def logout_user(request):
     return redirect('home')
 
 def signup(request):
+    if request.user.is_authenticated:
+        logout(request)
     form = SignUpForm()
     if request.method == "POST":
         form = SignUpForm(request.POST)
@@ -49,7 +55,11 @@ def signup(request):
             else:
                 messages.error(request, "Authentication failed, please try again.")
         else:
-            messages.error(request, "Whoops! There was a problem Registering, please try again...")
+            for field, errors in form.errors.items():
+                if errors:  # Check if there are errors for the field
+                    first_error = errors[0]  # Get the first error
+                    messages.error(request, f"{field.capitalize()}: {first_error}")
+
     return render(request, 'signup.html', {'form': form})
 
 def signup_thanks(request):

@@ -29,3 +29,6 @@ class SignUpForm(UserCreationForm):
 		self.fields['password2'].widget.attrs['placeholder'] = 'Confirm Password'
 		self.fields['password2'].label = 'Confirm Password'
 		self.fields['password2'].help_text = '<span class="text-center text-sm text-gray-500"><br>Enter the same password as before, for verification.</span>'
+
+		if self.errors.get('password2'):
+                  self.errors['password'] = self.errors.pop('password2')
