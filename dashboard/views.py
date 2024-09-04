@@ -11,22 +11,24 @@ def dashboard(request, menu_id=None):
     profile = get_object_or_404(Profile, user=request.user)
 
     menus = Menu.objects.filter(user=profile.user)
-    context = {
-        'restaurant_name': profile.resturant_name,
-        'restaurant_image': profile.image,
-        'menus': []
-    }
-    if menu_id is None:
-        first_menu = menus.first()
-        menu_id = first_menu.id
-    
-    selected_menu = get_object_or_404(Menu, id=menu_id, user=profile.user)
-    
-    products = Product.objects.filter(menu=selected_menu)
+    restaurant_name = profile.resturant_name if profile.resturant_name else "Default Restaurant Name"
+    # restaurant_image = profile.image if profile.image else "default_image_url.jpg"  # or use a default image URL
+
+    if menus.exists():
+        if menu_id is None:
+            first_menu = menus.first()
+            menu_id = first_menu.id
+        
+        selected_menu = get_object_or_404(Menu, id=menu_id, user=profile.user)
+        
+        products = Product.objects.filter(menu=selected_menu)
+    else:
+        selected_menu = None
+        products = []
 
     context = {
-        'restaurant_name': profile.resturant_name,
-        'restaurant_image': profile.image,
+        'restaurant_name': restaurant_name,
+        # 'restaurant_image': profile.image,
         'menus': menus,  
         'selected_menu': selected_menu,  
         'products': products,  
