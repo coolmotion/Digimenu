@@ -1,0 +1,101 @@
+{% load static %}
+<!DOCTYPE html>
+<html :class="{ 'theme-dark': dark }" x-data="data()" lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Digimenu Dashboard</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script
+      src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js"
+      defer
+    ></script>
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+    <script src="{% static '/assets/js/init-alpine.js' %}"></script>
+  </head>
+  <body>
+    <div
+      class="flex h-screen bg-gray-50 dark:bg-zinc-950"
+      :class="{ 'overflow-hidden': isSideMenuOpen }"
+    >
+      <!-- Desktop sidebar -->
+      {% include 'dsidebar.html' %}
+      <!-- Mobile sidebar -->
+      <!-- Backdrop -->
+      {% include 'dmsidebar.html' %}
+      <div class="flex flex-col flex-1 w-full">
+        {% include 'dheader.html' %}
+        <main class="h-full overflow-y-auto items-center">
+          <div class="p-4 mx-auto grid items-center mt-4 mr-4">
+            <!-- New Table -->
+            <div class="w-full overflow-hidden rounded-lg bg-black p-4 m-2 shadow-xs">
+              <div class="w-full overflow-x-auto">
+                <h3 class="text-gray-100 font-bold text-4xl px-2">{{ name }} | <span class="text-gray-500 text-sm "> {{ menu }} Menu </span></h3>
+              </div>
+              <div class="pt-6 grid grid-cols-1 md:grid-cols-1 gap-4">
+                <div class=" px-4">
+                  <form class="space-y-4" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    <!-- Name Field -->
+                    <div class="flex flex-col">
+                        <label for="name" class="text-gray-200 text-sm ml-0.5 font-bold">Name</label>
+                        <input type="text" id="name" name="name" class="mt-1 p-2 border px-2 py-1 border-indigo-950 rounded-xl bg-black text-white text-xs" placeholder="Enter product name">
+                    </div>
+                
+                    <!-- Price Field -->
+                    <div class="flex flex-col">
+                        <label for="price" class="text-gray-200 text-sm ml-0.5 font-bold">Price</label>
+                        <input type="number" step="0.01" id="price" name="price" class="mt-1 px-2 py-1 border border-indigo-950 rounded-xl bg-black text-white text-xs" placeholder="Enter price in Rs">
+                    </div>
+                
+                    <!-- Description Field -->
+                    <div class="flex flex-col">
+                        <label for="description" class="text-gray-200 text-sm ml-0.5 font-bold">Description</label>
+                        <textarea id="description" name="description" rows="4" class="mt-1 px-2 py-1 border border-indigo-950 rounded-xl bg-black text-white text-xs" placeholder="Enter product description"></textarea>
+                    </div>
+                
+                    <!-- Availability Field -->
+                    <div class="flex flex-col">
+                        <label for="availability" class="text-gray-200 text-sm ml-0.5 font-bold">Availability</label>
+                        <select id="availability" name="availability" class="mt-1 px-2 py-1 border border-indigo-950 rounded-xl w-1/4 bg-white text-xs">
+                            <option value="available">Available</option>
+                            <option value="coming_soon">Coming Soon</option>
+                            <option value="not_available">Not Available</option>
+                        </select>
+                    </div>
+                
+                    <!-- Menu Field (for the ForeignKey relationship) -->
+                    <div class="flex flex-col">
+                        <label for="menu" class="text-gray-200 text-sm ml-0.5 font-bold">Menu</label>
+                        <select id="menu" name="menu" class="mt-1 px-2 py-1 border border-indigo-950 rounded-xl w-1/4 bg-white text-xs">
+                            {% for menu_item in menus %}
+                            <option value="{{ menu_item.id }}">{{ menu_item.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                
+                    <!-- Image Upload Field -->
+                    <div class="flex flex-col">
+                        <label for="image" class="text-gray-200 text-sm ml-0.5 font-bold">Image</label>
+                        <input type="file" id="image" name="image" class="mt-1 px-2 py-1 border border-indigo-950 rounded-xl w-full bg-white text-xs">
+                    </div>
+                
+                    <!-- Submit Button -->
+                    <button type="submit" class="w-full py-2 px-4 bg-blue-500 text-white rounded-md hover:bg-blue-600">Submit</button>
+                </form>
+                
+                  
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  </body>
+</html>

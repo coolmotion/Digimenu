@@ -1,0 +1,80 @@
+{% load static %}
+<!DOCTYPE html>
+<html :class="{ 'theme-dark': dark }" x-data="data()" lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Digimenu Dashboard</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script
+      src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js"
+      defer
+    ></script>
+    <script src="{% static '/assets/js/init-alpine.js' %}"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.css"
+    />
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"
+      defer
+    ></script>
+  </head>
+  <body>
+    <div
+      class="flex h-screen bg-gray-50 dark:bg-zinc-950"
+      :class="{ 'overflow-hidden': isSideMenuOpen }"
+    >
+      {% include 'dsidebar.html' %}
+      <!-- Mobile sidebar -->
+      <!-- Backdrop -->
+      {% include 'dmsidebar.html' %}
+      <div class="flex flex-col flex-1 w-full">
+        {% include 'dheader.html' %}
+        <main class="h-full overflow-y-auto">
+          <div class="container px-6 mx-auto grid">
+            <h2
+              class="my-6 text-2xl font-semibold text-gray-700 dark:text-white"
+            >
+            {{ restaurant_name }} 
+            </h2>
+            <!-- Cards -->
+            {% include 'dcards.html' %}
+            <div class="flex  mb-2 mx-1 justify-between">
+              <div class="flex">
+                <div class="flex flex-col">
+                  <a class="{% if request.path == '/dashboard/' %}bg-gray-100 text-gray-700{% else %}bg-black text-gray-100{% endif %} font-bold text-sm rounded-xl px-3 py-1 mr-2" href="{% url 'dashboard' %}">
+                      All items
+                  </a>
+                  {% if request.path == '/dashboard/' %}
+                      <hr class="h-0.5 mt-1 bg-indigo-500 border-0 mr-2 rounded">
+                  {% endif %}
+                </div>
+                {% for menu in menus %}
+                <div class="flex flex-col">
+                    <a class="{% if menu.id == selected_menu.id %}bg-gray-100 text-gray-700{% else %}bg-black text-gray-100{% endif %} font-bold text-sm rounded-xl px-3 py-1 mr-2" href="{% url 'dashboard_menu' menu_id=menu.id %}">
+                        {{ menu.name }}
+                    </a>
+                    {% if menu.id == selected_menu.id %}
+                        <hr class="h-0.5 mt-1 bg-indigo-500 border-0 mr-2 rounded">
+                    {% endif %}
+                </div>
+                {% endfor %}
+              </div>
+\
+              <a class="bg-indigo-500 text-white rounded-xl mb-2 px-3 py-1" href="{% url 'add_menu' %}"> + </a>
+            </div>
+            <!-- New Table -->
+            {% block content %}
+            {% endblock %}
+          </div>
+        </main>
+      </div>
+    </div>
+  </body>
+</html>

@@ -34,7 +34,7 @@ class Menu(models.Model):
 		profile = Profile.objects.get(user=self.user)  # Get the Profile associated with the User
 		restaurant_name = profile.resturant_name.capitalize()  # Capitalize the restaurant name
 		menu_name = self.name.capitalize()  # Capitalize the menu name
-		return f"{restaurant_name} {menu_name}"
+		return f"{menu_name}"
 
          
 
