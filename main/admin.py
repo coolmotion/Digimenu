@@ -11,7 +11,7 @@ class MenuAdmin(admin.ModelAdmin):
     inlines = [ProductInline]
 
 admin.site.register(Menu, MenuAdmin)
-# admin.site.register(Product)  
+admin.site.register(Product)  
 
 # Mix profile info and user info
 class ProfileInline(admin.StackedInline):
