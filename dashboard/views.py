@@ -11,12 +11,11 @@ def dashboard(request, menu_id=None):
     profile = get_object_or_404(Profile, user=request.user)
 
     menus = Menu.objects.filter(user=profile.user)
-    restaurant_name = profile.resturant_name if profile.resturant_name else "Default Restaurant Name"
     # restaurant_image = profile.image if profile.image else "default_image_url.jpg"  # or use a default image URL
     products = Product.objects.filter(menu__user=profile.user)
 
     context = {
-        'restaurant_name': restaurant_name,
+        'profile': profile,
         # 'restaurant_image': profile.image,
         'menus': menus,  
         'products': products,  
@@ -44,7 +43,7 @@ def dashboard_menu(request, menu_id=None):
         products = []
 
     context = {
-        'restaurant_name': restaurant_name,
+        'profile': profile,
         # 'restaurant_image': profile.image,
         'menus': menus,  
         'selected_menu': selected_menu,  
@@ -53,7 +52,10 @@ def dashboard_menu(request, menu_id=None):
     print(menu_id)
     return render(request, 'dashboard.html', context )
 
+@login_required
 def product_info(request, product_id=None):
+    profile = get_object_or_404(Profile, user=request.user)
+
     if product_id is not None:
 
         product = get_object_or_404(Product, id=product_id)
@@ -75,9 +77,11 @@ def product_info(request, product_id=None):
 
             product.save()
             messages.success(request, "Your product was added.")
+            return redirect('dashboard')
 
 
         context = {
+            'profile': profile,
             'name': product.name,
             'description': product.description,
             'menu': product.menu,
@@ -85,13 +89,14 @@ def product_info(request, product_id=None):
             'image': product.image
 
         }
-        return render(request, 'product_info.html', context)
+    return render(request, 'product_info.html', context)
     
-    return HttpResponse("Product ID not provided.")
+
 
 @login_required
 def add_product(request):
     menus = Menu.objects.filter(user=request.user)
+    profile = get_object_or_404(Profile, user=request.user)
     if request.method == 'POST':
         name = request.POST.get('name')
         description = request.POST.get('description')
@@ -113,11 +118,11 @@ def add_product(request):
         else:
             messages.error(request, "Please fill in all required fields.")
     # messages.error(request, "This page is under construction.")
-    return render(request, 'addproduct.html' , {'menus': menus})
+    return render(request, 'addproduct.html' , {'menus': menus, 'profile': profile,})
 
 @login_required
 def add_menu(request):
-
+    profile = get_object_or_404(Profile, user=request.user)
     menus = Menu.objects.filter(user=request.user)
     if request.method == 'POST':
         name = request.POST.get('name') 
@@ -132,13 +137,13 @@ def add_menu(request):
         else:
             messages.error(request, "Please provide a valid menu name.")
     
-    return render(request, 'addmenu.html' , {'menus': menus})  
+    return render(request, 'addmenu.html' , {'menus': menus ,'profile': profile})  
 
 @login_required
 def change_menu(request, menu_id):
     edit_menu = get_object_or_404(Menu, id=menu_id, user=request.user)  
     menus = Menu.objects.filter(user=request.user)
-
+    profile = get_object_or_404(Profile, user=request.user)
 
     if request.method == 'POST':
         name = request.POST.get('name')
@@ -151,7 +156,7 @@ def change_menu(request, menu_id):
         else:
             messages.error(request, "Please provide a valid menu name.")
     
-    return render(request, 'changemenu.html', {'edit_menu': edit_menu , 'menus': menus})
+    return render(request, 'changemenu.html', {'edit_menu': edit_menu , 'menus': menus, 'profile':profile})
 
 @login_required
 def delete_menu(request, menu_id):

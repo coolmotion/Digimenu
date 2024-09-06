@@ -18,8 +18,8 @@
         </a>
         {% for menu in menus %}
         <a href="{% url 'menu' resturant.id menu.id %}" 
-           class=" px-2 py-1 mx-1 text-sm font-bold rounded-xl {% if menu.id == menu_id %}bg-gray-900 text-gray-100{% else %}bg-gray-200 text-black{% endif %}">
-            {{ menu.name }} Menu {{current_menu.id}}
+           class=" px-2 py-1 mx-1 text-sm font-bold rounded-xl {% if menu.id == current_menu.id %}bg-gray-900 text-gray-100{% else %}bg-gray-200 text-black{% endif %}">
+            {{ menu.name }} Menu 
         </a>
     {% endfor %}
     
