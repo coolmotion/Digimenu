@@ -7,6 +7,7 @@ from main.models import Profile
 from django.shortcuts import get_object_or_404
 from django import forms
 from .froms import SignUpForm
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 def index(request):
@@ -67,6 +68,7 @@ def signup(request):
 def signup_thanks(request):
     return render(request, 'signupthanks.html', )
 
+@login_required
 def user_info(request):
     # Get the existing Profile for the current user or create a new one if it doesn't exist
     profile = get_object_or_404(Profile, user=request.user)
