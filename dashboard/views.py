@@ -27,7 +27,6 @@ def dashboard_menu(request, menu_id=None):
     profile = get_object_or_404(Profile, user=request.user)
 
     menus = Menu.objects.filter(user=profile.user)
-    restaurant_name = profile.resturant_name if profile.resturant_name else "Default Restaurant Name"
     # restaurant_image = profile.image if profile.image else "default_image_url.jpg"  # or use a default image URL
 
     if menus.exists():
@@ -44,7 +43,6 @@ def dashboard_menu(request, menu_id=None):
 
     context = {
         'profile': profile,
-        # 'restaurant_image': profile.image,
         'menus': menus,  
         'selected_menu': selected_menu,  
         'products': products,  
@@ -97,6 +95,11 @@ def product_info(request, product_id=None):
 def add_product(request):
     menus = Menu.objects.filter(user=request.user)
     profile = get_object_or_404(Profile, user=request.user)
+
+    if not menus.exists():
+        messages.error(request, "You need to create a menu before adding products.")
+
+        return redirect('add_menu')
     if request.method == 'POST':
         name = request.POST.get('name')
         description = request.POST.get('description')

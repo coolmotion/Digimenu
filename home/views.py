@@ -3,6 +3,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
+from main.models import Profile
+from django.shortcuts import get_object_or_404
 from django import forms
 from .froms import SignUpForm
 
@@ -51,7 +53,7 @@ def signup(request):
             if user is not None:
                 login(request, user)
                 messages.success(request, "Your account was created...")
-                return redirect('dashboard')
+                return redirect('user_info')
             else:
                 messages.error(request, "Authentication failed, please try again.")
         else:
@@ -64,6 +66,29 @@ def signup(request):
 
 def signup_thanks(request):
     return render(request, 'signupthanks.html', )
+
+def user_info(request):
+    # Get the existing Profile for the current user or create a new one if it doesn't exist
+    profile = get_object_or_404(Profile, user=request.user)
+    
+    if request.method == 'POST':
+        # Update the profile fields with the data from the form
+        profile.resturant_name = request.POST.get('restaurant_name', profile.resturant_name)
+        profile.resturant_slogan = request.POST.get('tagline', profile.resturant_slogan)
+        profile.address1 = request.POST.get('address', profile.address1)
+        profile.zipcode = request.POST.get('zip_code', profile.zipcode)
+        profile.description = request.POST.get('description', profile.description)
+        
+        # Handle file upload
+        if 'restaurant_logo' in request.FILES:
+            profile.image = request.FILES['restaurant_logo']
+        
+        # Save the updated profile
+        profile.save()
+
+        return redirect('dashboard')
+
+    return render(request, 'user_info.html', {'profile': profile})
 
 def product(request):
     messages.error(request, "This page is under construction.")
