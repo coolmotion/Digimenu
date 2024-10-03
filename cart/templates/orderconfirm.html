@@ -20,7 +20,7 @@
                     {% for item in items %}
                     <li class="flex justify-between items-center p-2 hover:bg-gray-100 rounded">
                         <span class="font-medium">{{ item.portion.product.name }}</span>
-                        <span>Qty: {{ item.quantity }}</span>
+                        <span class="mx-1">Quantity: {{ item.quantity }}</span>
                         <span>Rs{{ item.price|floatformat:2 }}</span>
                     </li>
                     {% endfor %}
