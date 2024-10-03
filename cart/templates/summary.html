@@ -1,3 +1,5 @@
+{% load cart_extras %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -64,9 +66,20 @@
       <h2 class="text-lg font-semibold">Order Summary</h2>
       <ul class="mt-4">
         <li class="flex justify-between py-2">
-          <span>Items 3</span>
-          <span>Rs {{totals}}</span>
+          <span>Subtotal</span>
         </li>
+        {% for cart_product in cart_products %}
+        <div class=" flex flex-row text-gray-500 font-bold text-xs justify-between">
+            <div>{{cart_product.product.name}} | {{cart_product.name}} - Rs {{cart_product.price}} x 
+            {% for key, value in quantities.items %}
+                {% if key == cart_product.id|slugify %}
+                    {{ value }}</div><div>Rs {{ cart_product.price|multiply:value }}
+                {% endif %}
+            {% endfor %}</div> 
+        </div>
+      {% endfor %}
+    
+    
         <li class="flex justify-between py-2">
           <span>Total Cost</span>
           <span>Rs {{totals}}</span>
@@ -75,8 +88,8 @@
       <div class="mt-4">
         <form method="post" action="{% url 'process_order'  resturant_id=resturant.id %}">
           {% csrf_token %}
-          <input type="number" required id="phone" name="phone" min`="0" placeholder="Enter your phone number" class="form-input mt-1 block w-full">
-          <button type="submit" class="mt-4 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Order</button>
+          <input type="number" required id="phone" name="phone" min`="0" placeholder="Enter your phone number" class="px-2 py-1 rounded-lg mt-1 block w-full">
+          <button type="submit" class="mt-4 bg-indigo-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-xl">Order</button>
       </form>
       </div>
     </div>

@@ -15,7 +15,7 @@
   <div class="flex h-full flex-col bg-white shadow-xl">
     <div class="flex-1 overflow-y-auto px-4 py-6 sm:px-6">
       <div class="flex items-start justify-between">
-        <h2 class="text-lg font-medium text-gray-900" id="slide-over-title">Shopping cart</h2>
+        <h2 class="text-2xl font-medium text-gray-900" id="slide-over-title">Shopping cart</h2>
         <div class="ml-3 flex h-7 items-center">
           <button type="button" class="closeButton relative -m-2 p-2 text-gray-400 hover:text-gray-500">
             <span class="absolute -inset-0.5"></span>
@@ -33,7 +33,7 @@
             {% for cart_product in cart_products%}
             <li class="flex py-6">
               <div class="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
-                <img src="{{ cart_product.product.image.url }}" alt="Salmon orange fabric pouch with match zipper, gray zipper pull, and adjustable hip belt." class="h-full w-full object-cover object-center">
+                <img src="{{ cart_product.product.image.url }}"  class="h-full w-full rounded-xl object-cover object-center">
               </div>
 
               <div class="ml-4 flex flex-1 flex-col">
@@ -50,7 +50,7 @@
                       {% endfor %}</label> 
                   </div>                  
                   <div class="flex mt-3">
-                    <button type="button" class="font-medium text-indigo-600 hover:text-indigo-500">Edit</button>
+                    <a href="{% url 'summary' resturant_id=resturant.id %}" type="button" class="font-medium text-indigo-600 hover:text-indigo-500">Edit</a>
                     <button data-index="{{cart_product.id}}" class="delete-product font-medium text-indigo-600 hover:text-indigo-500 ml-4" >Delete</button>
                   </div>
                 </div>
