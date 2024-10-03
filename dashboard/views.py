@@ -4,6 +4,7 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from main.models import Profile,Menu, Product
+from cart.models import Order
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from .forms import ProductForm
@@ -188,3 +189,23 @@ def generate_qr_code(request, resturant_id):
 
     # Return the image as an HTTP response with the proper content type
     return HttpResponse(buffer, content_type='image/png')
+
+@login_required
+def list_orders(request):
+    # Assuming 'user' is linked to 'Profile' and 'Profile' has a one-to-one relationship with 'User'
+    restaurant = request.user.profile
+    profile = get_object_or_404(Profile, user=request.user)
+
+    menus = Menu.objects.filter(user=profile.user)
+    # restaurant_image = profile.image if profile.image else "default_image_url.jpg"  # or use a default image URL
+    products = Product.objects.filter(menu__user=profile.user)
+    orders = Order.objects.filter(resturant=restaurant).order_by('-date_ordered')
+    context = {
+        'restaurant': restaurant,
+        'orders': orders,
+        'profile': profile,
+        # 'restaurant_image': profile.image,
+        'menus': menus,  
+    }
+    return render(request, 'orders.html', context)
+

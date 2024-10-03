@@ -1,0 +1,51 @@
+{% extends 'dbase.html' %}
+{% load static %}
+{% block content %}
+<div class="w-full overflow-hidden rounded-lg shadow-xs mb-6">
+  <div class="w-full overflow-x-auto">
+    <table class="w-full whitespace-no-wrap">
+      <thead>
+        <tr
+          class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-50 dark:text-gray-100 dark:bg-black"
+        >
+          <th class="px-4 py-3 w-6">ID</th>
+          <th class="px-4 py-3">Phone</th>
+          <th class="px-4 py-3">Amount Paid</th>
+          <th class="px-4 py-3">Date Ordered</th>
+          <th class="px-4 py-3">Items</th>
+        </tr>
+      </thead>
+      <tbody
+        class="bg-white divide-y dark:divide-gray-700 dark:bg-black"
+      >
+      {% if orders %}
+      {% for order in orders %}
+        <tr class="text-gray-700 dark:text-gray-400">
+          <td class="px-4 py-3 text-sm">{{ order.id }}</td>
+          <td class="px-4 py-3 text-sm">{{ order.phone }}</td>
+          <td class="px-4 py-3 text-sm">Rs {{ order.amount_paid }}</td>
+          <td class="px-4 py-3 text-sm">{{ order.date_ordered|date:"D d M Y H:i" }}</td>
+          <td class="px-4 py-3 text-sm">
+            <ul>
+              {% for item in order.orderitem_set.all %}
+                <li>{{ item.portion.name }} - Quantity: {{ item.quantity }}, Price: Rs {{ item.price }}</li>
+              {% empty %}
+                <li>No items found.</li>
+              {% endfor %}
+            </ul>
+          </td>
+        </tr>
+      {% endfor %}
+      {% else %}
+      <tr>
+        <td colspan="5" class="text-center py-4 text-gray-600 dark:text-gray-400">
+          No orders found.
+        </td>
+      </tr>
+      {% endif %}
+      
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

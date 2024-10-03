@@ -64,10 +64,11 @@ def process_order(request, resturant_id):
     phone_number = request.POST.get('phone')
     cart = Cart(request, app_id=resturant_id)
     quantities = cart.get_quants
-    amount_paid = cart.cart_total()
+    amount_paid = cart.cart_total(app_id=resturant_id)
     cart_portions = cart.get_prods
+    resturant = Profile.objects.get(id=resturant_id)
 
-    create_order = Order(phone=phone_number, amount_paid=amount_paid)
+    create_order = Order(phone=phone_number, amount_paid=amount_paid, resturant=resturant)
     try:
         create_order.save()
         print(f"Order saved successfully for phone number: {phone_number}")
@@ -83,14 +84,25 @@ def process_order(request, resturant_id):
                     create_order_item.save()
 
         # Clear relevant session keys
-        for key in list(request.session.keys()):
-            if key == "session_key":
-                # Delete the key
-                del request.session[key]
+        session_key = f'app_{resturant_id}_cart'
+        if session_key in request.session:
+            del request.session[session_key]
+            print('Session key deleted')
+
         messages.success(request, "Order Placed!")
 
     except Exception as e:
         print(f"Failed to save order for phone number: {phone_number}. Error: {e}")
 
     # Redirect the user to a new page or back to the form with a success message
-    return redirect('home')
+    return redirect('orderconfirm', resturant_id=resturant_id, order_id=order_id)
+
+def order_placed(request, resturant_id, order_id):
+    order = Order.objects.get(id=order_id)
+    items = OrderItem.objects.filter(order_id=order_id)
+    context = {
+        'order': order,
+        'items': items
+    }
+    return render(request, 'orderconfirm.html', context)
+

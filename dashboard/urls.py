@@ -10,5 +10,7 @@ urlpatterns = [
     path('chanegmenu/<int:menu_id>', views.change_menu, name='change_menu'),
     path('menu/delete/<int:menu_id>/', views.delete_menu, name='delete_menu'),
     path('qr/<int:resturant_id>', views.generate_qr_code, name='viewqr'),
+    path('orders/', views.list_orders, name='orders'),
+
 
 ]

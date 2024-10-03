@@ -15,7 +15,7 @@ class Profile(models.Model):
 	country = models.CharField(max_length=200, blank=True)
 
 	def __str__(self):
-		return self.user.username
+		return self.resturant_name
 	
 # Create a user Profile by default when user signs up
 def create_profile(sender, instance, created, **kwargs):
