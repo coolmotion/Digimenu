@@ -31,24 +31,26 @@ class Menu(models.Model):
 	name = models.CharField(max_length=50)
 
 	def __str__(self):
-		profile = Profile.objects.get(user=self.user)  # Get the Profile associated with the User
-		restaurant_name = profile.resturant_name.capitalize()  # Capitalize the restaurant name
-		menu_name = self.name.capitalize()  # Capitalize the menu name
+		profile = Profile.objects.get(user=self.user)  
+		restaurant_name = profile.resturant_name.capitalize()  
+		menu_name = self.name.capitalize()  
 		return f"{menu_name}"
 
-         
-
-
-
 class Product(models.Model):
-	name = models.CharField(max_length=100)
-	price = models.DecimalField(default=0, decimal_places=2, max_digits=6)
-	menu = models.ForeignKey(Menu, on_delete=models.CASCADE, default=1)
-	description = models.CharField(max_length=250, default='0', blank=True, null=True)
-	image = models.ImageField(upload_to='uploads/product/',blank=True, null=True )
-	is_sale = models.BooleanField(default=False)
-	sale_price = models.DecimalField(default=0, decimal_places=2, max_digits=6)
+    name = models.CharField(max_length=100)
+    menu = models.ForeignKey(Menu, on_delete=models.CASCADE, default=1)
+    description = models.CharField(max_length=250, default='0', blank=True, null=True)
+    image = models.ImageField(upload_to='uploads/product/', blank=True, null=True)
 
-	def __str__(self):
-		return f"{self.name} {self.menu}"
+    def __str__(self):
+        return f"{self.name}"
+
+class Portion(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='portions')
+    name = models.CharField(max_length=100)
+    price = models.DecimalField(default=0, decimal_places=2, max_digits=6)
+
+    def __str__(self):
+        return f"{self.product} - {self.name}"
+
 

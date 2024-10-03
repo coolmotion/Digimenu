@@ -1,0 +1,129 @@
+{% load static %}
+<style>
+        #menu {
+            width: 100vw;
+            height: 100%;
+            background: rgb(255, 255, 255);
+            position: fixed;
+            right: -100vw; /* Start off-screen to the right */
+            top: 0;
+            transition: right 0.5s; /* Animate the 'right' property */
+        }
+</style>
+<!-- Shopping cart -->
+<div id="menu" class="min-h-screen bg-white fixed ">
+  <div class="flex h-full flex-col bg-white shadow-xl">
+    <div class="flex-1 overflow-y-auto px-4 py-6 sm:px-6">
+      <div class="flex items-start justify-between">
+        <h2 class="text-lg font-medium text-gray-900" id="slide-over-title">Shopping cart</h2>
+        <div class="ml-3 flex h-7 items-center">
+          <button type="button" class="closeButton relative -m-2 p-2 text-gray-400 hover:text-gray-500">
+            <span class="absolute -inset-0.5"></span>
+            <span class="sr-only">Close panel</span>
+            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="mt-8">
+        <div class="flow-root">
+          <ul role="list" class="-my-6 divide-y divide-gray-200">
+            {% for cart_product in cart_products%}
+            <li class="flex py-6">
+              <div class="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
+                <img src="{{ cart_product.product.image.url }}" alt="Salmon orange fabric pouch with match zipper, gray zipper pull, and adjustable hip belt." class="h-full w-full object-cover object-center">
+              </div>
+
+              <div class="ml-4 flex flex-1 flex-col">
+                <div>
+                  <div class="flex flex-col text-base font-medium text-gray-900">
+                    <h3 class="text-gray-900">{{cart_product.product}} <span class="text-gray-500 text-sm">| {{ cart_product.name }}</span> </h3>
+                    <p class=" text-sm text-gray-500">Rs {{ cart_product.price }}<span class="text-xs text-gray-500 "> /per item</span></p>
+                  </div>
+                </div>
+                <div class="flex flex-col text-sm">
+                  <div class="flex items-center space-x-2">
+                    <p class="text-gray-500 text-xs">Quantity:{% for key, value in quantities.items %}
+                      {% if key == cart_product.id|slugify %}{{ value }}{% endif %}
+                      {% endfor %}</label> 
+                  </div>                  
+                  <div class="flex mt-3">
+                    <button type="button" class="font-medium text-indigo-600 hover:text-indigo-500">Edit</button>
+                    <button data-index="{{cart_product.id}}" class="delete-product font-medium text-indigo-600 hover:text-indigo-500 ml-4" >Delete</button>
+                  </div>
+                </div>
+              </div>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="border-t border-gray-200 px-4 py-6 sm:px-6 ">
+      <div class="flex justify-between text-base font-medium text-gray-900">
+        <p>Subtotal</p>
+        <p>Rs {{ totals }}</p>
+      </div>
+      <p class="mt-0.5 text-sm text-gray-500">Shipping and taxes calculated at checkout.</p>
+      <div class="mt-6">
+        <a href="{% url 'summary' resturant_id=resturant.id %}" class="flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700">Proceed to Checkout</a>
+      </div>
+      <div class="mt-6 flex justify-center text-center text-sm text-gray-500">
+        <p>
+          or
+          <button type="button" id="" class="closeButton font-medium text-indigo-600 hover:text-indigo-500">
+            Add more items
+            <span aria-hidden="true"> &rarr;</span>
+          </button>
+        </p>
+      </div>
+    </div>
+  </div> 
+</div>
+<script>
+  $(document).ready(function() {
+      $('#toggleButton').click(function() {
+          const menuPos = $('#menu').css('right');
+          if(menuPos == '-100vw') {
+              $('#menu').css('right', '100vw'); // Slide in to view
+          } else {
+              $('#menu').css('right', '0vw'); // Slide out of view
+          }
+      });
+      $('.closeButton').click(function() {
+          $('#menu').css('right', '-100vw'); // Always close the menu
+      });
+  });
+  // Delete Item From Cart
+$(document).on('click', '.delete-product', function(e){
+    e.preventDefault();
+    // grab the product id
+    //var productid = $(this).data('index');
+
+    $.ajax({
+    type: 'POST',
+    url: '{% url 'cart_delete' resturant_id=resturant.id %}',
+    data: {
+      product_id: $(this).data('index'),
+      csrfmiddlewaretoken: '{{ csrf_token }}',
+      action: 'post'
+    },
+    success: function(json){
+        //console.log(json)
+        //document.getElementById("cart_quantity").textContent = json.qty
+        location.reload();
+    },
+
+    error: function(xhr, errmsg, err){
+
+    }
+
+
+    });
+
+})
+
+</script>

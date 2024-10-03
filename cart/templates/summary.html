@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <style>
+      /* Hide spinner controls in most browsers */
+      input[type="number"]::-webkit-outer-spin-button,
+      input[type="number"]::-webkit-inner-spin-button {
+          -webkit-appearance: none;
+          margin: 0;
+      }
+    
+      /* Hide spinner controls in Firefox */
+      input[type="number"] {
+          -moz-appearance: textfield;
+      }
+    </style>
+</head>
+<body>
+<div class="bg-white ">
+  <div class="flex flex-col lg:flex-row justify-between items-start">
+    <div class="lg:w-2/3  lg:p-16 p-8 lg:min-h-screen">
+      <h1 class="text-3xl font-semibold">Shopping Cart</h1>
+      <span class="text-sm text-gray-500">{{ total_items }} items</span>
+      <div class="mt-6">
+        {% for cart_product in cart_products %}
+        <div class="flex flex-col lg:flex-row  justify-between items-center py-4 border-b">
+          <div class="flex items-center">
+            <img src="{{cart_product.product.image.url}}" alt="Fifa 19" class="lg:h-12 lg:w-12 w-20 h-20 object-cover mr-4">
+            <div class="felx flex-row">
+                <p>{{cart_product.product.name}}</p>
+                <P class="text-gray-500 font-bold text-xs">{{cart_product.name}}</P>
+            </div>
+          </div>
+          <h3 class="text-gray-500 font-bold text-xs">Quantity</h3>
+          <div class=" flex">
+            <button id="increase{{cart_product.id}}" class="py-1 px-2.5 justify-center items-center  text-sm font-bold rounded-3xl bg-gray-200 text-black">+</button>
+            <input type="number" id="quantity{{cart_product.id}}" class="w-16 text-center" 
+            {% for key, value in quantities.items %}
+            {% if key == cart_product.id|slugify %}
+              value="{{ value }}" 
+            {% endif %}
+            {% endfor %} value="0" min="0">
+            <button id="decrease{{cart_product.id}}" class="py-1 px-2.5 justify-center items-center  text-sm font-bold rounded-xl bg-gray-200 text-black">-</button>
+          </div>
+          <div class="flex flex-col">
+            <p>Rs {{cart_product.price}}<span class="text-xs text-gray-500"> /price per item</span></p>
+            <div class="flex space-x-4 font-semibold text-xs">
+              <button type="button" data-index="{{cart_product.id}}"  class="update-cart bg-indigo-500 rounded-lg px-2 py-1 text-gray-100">Update</button>
+              <button data-index="{{cart_product.id}}" class="delete-product bg-indigo-500 rounded-lg px-2 py-1 text-gray-100" >Delete</button>
+            </div>
+          </div>
+        </div>
+        {% endfor %} 
+      </div>
+      <a href="#" class="text-blue-500 hover:text-blue-700 mt-4 inline-block">Continue Shopping</a>
+    </div>
+
+    <div class="lg:w-1/3 w-full bg-gray-100 lg:py-16  lg:pl-10 lg:pr-16 p-8 lg:min-h-screen">
+      <h2 class="text-lg font-semibold">Order Summary</h2>
+      <ul class="mt-4">
+        <li class="flex justify-between py-2">
+          <span>Items 3</span>
+          <span>Rs {{totals}}</span>
+        </li>
+        <li class="flex justify-between py-2">
+          <span>Total Cost</span>
+          <span>Rs {{totals}}</span>
+        </li>
+      </ul>
+      <div class="mt-4">
+        <form method="post" action="{% url 'process_order'  resturant_id=resturant.id %}">
+          {% csrf_token %}
+          <input type="number" required id="phone" name="phone" min`="0" placeholder="Enter your phone number" class="form-input mt-1 block w-full">
+          <button type="submit" class="mt-4 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Order</button>
+      </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Update Cart
+  $(document).on('click', '.update-cart', function(e){
+      e.preventDefault();
+
+    var productid = $(this).data('index');
+
+  
+      $.ajax({
+      type: 'POST',
+      url: '{% url 'cart_update' resturant_id=resturant.id %}',
+      data: {
+        product_id: $(this).data('index'),
+        product_qty: $('#quantity' + productid).val(),
+        csrfmiddlewaretoken: '{{ csrf_token }}',
+        action: 'post'
+      },
+      success: function(response){
+          console.log(response)
+          location.reload();
+      },
+  
+      error: function(xhr, errmsg, err){
+  
+      }
+  
+  
+      });
+  
+  })
+  
+  // Delete Item From Cart
+  $(document).on('click', '.delete-product', function(e){
+      e.preventDefault();
+      // grab the product id
+      //var productid = $(this).data('index');
+  
+      $.ajax({
+      type: 'POST',
+      url: '{% url 'cart_delete' resturant_id=resturant.id %}',
+      data: {
+        product_id: $(this).data('index'),
+        csrfmiddlewaretoken: '{{ csrf_token }}',
+        action: 'post'
+      },
+      success: function(json){
+          //console.log(json)
+          //document.getElementById("cart_quantity").textContent = json.qty
+          location.reload();
+      },
+  
+      error: function(xhr, errmsg, err){
+  
+      }
+  
+  
+      });
+  
+  })
+  
+  
+  
+  
+  </script>
+  <script>
+    // Increase function
+    $('button[id^="increase"]').click(function() {
+        let quantityId = $(this).next('input').attr('id');
+        let value = parseInt($('#' + quantityId).val());
+        $('#' + quantityId).val(value + 1);
+    });
+  
+    // Decrease function
+    $('button[id^="decrease"]').click(function() {
+        let quantityId = $(this).prev('input').attr('id');
+        let value = parseInt($('#' + quantityId).val());
+        if (value > 0) {
+            $('#' + quantityId).val(value - 1);
+        }
+    });
+  </script>
+</body>
+</html>

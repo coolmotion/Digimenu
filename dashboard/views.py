@@ -5,6 +5,10 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from main.models import Profile,Menu, Product
 from django.shortcuts import get_object_or_404
+from django.urls import reverse
+from .forms import ProductForm
+import qrcode
+from io import BytesIO
 
 @login_required
 def dashboard(request, menu_id=None):
@@ -51,42 +55,29 @@ def dashboard_menu(request, menu_id=None):
     return render(request, 'dashboard.html', context )
 
 @login_required
-def product_info(request, product_id=None):
+def product_info(request, product_id):
     profile = get_object_or_404(Profile, user=request.user)
-
-    if product_id is not None:
-
-        product = get_object_or_404(Product, id=product_id)
-
-        if request.method == 'POST':
-            new_name = request.POST.get('name')
-            new_description = request.POST.get('description')
-            new_price = request.POST.get('price')
-
-            if new_name:
-                product.name = new_name
-
-            if new_description:
-                product.description = new_description
-            
-            if new_price:
-                product.price = new_price
-                print(new_price)
-
-            product.save()
-            messages.success(request, "Your product was added.")
+    product = get_object_or_404(Product, id=product_id)
+    if request.method == 'POST':
+        form = ProductForm(request.POST, instance=product)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Your product was updated successfully.")
             return redirect('dashboard')
+        else:
+            messages.error(request, "Please correct the errors below.")
+    else:
+        form = ProductForm(instance=product)
 
+    context = {
+        'profile': profile,
+        'name': product.name,
+        'description': product.description,
+        'menu': product.menu,
+        'price': '500',
+        'image': product.image
+    }
 
-        context = {
-            'profile': profile,
-            'name': product.name,
-            'description': product.description,
-            'menu': product.menu,
-            'price': product.price,
-            'image': product.image
-
-        }
     return render(request, 'product_info.html', context)
     
 
@@ -170,3 +161,30 @@ def delete_menu(request, menu_id):
         return redirect('dashboard')  
 
     return redirect('dashboard')  
+
+def generate_qr_code(request, resturant_id):
+    # Create the URL for the restaurant's menu page using the resturant_id
+    # profile = get_object_or_404(Profile, user=request.user)
+    # resturant_id = profile.id
+    menu_url = request.build_absolute_uri(reverse('menuhome', args=[resturant_id]))
+
+    # Create a QR code that redirects to the menu URL
+    qr = qrcode.QRCode(
+        version=1,
+        error_correction=qrcode.constants.ERROR_CORRECT_L,
+        box_size=10,
+        border=4,
+    )
+    qr.add_data(menu_url)
+    qr.make(fit=True)
+
+    # Create an image from the QR code
+    img = qr.make_image(fill='black', back_color='white')
+
+    # Save the image to a bytes buffer
+    buffer = BytesIO()
+    img.save(buffer)
+    buffer.seek(0)
+
+    # Return the image as an HTTP response with the proper content type
+    return HttpResponse(buffer, content_type='image/png')
