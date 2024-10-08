@@ -19,7 +19,7 @@ class Profile(models.Model):
 	
 # Create a user Profile by default when user signs up
 def create_profile(sender, instance, created, **kwargs):
-	if created:
+	if created and not Profile.objects.filter(user=instance).exists():
 		user_profile = Profile(user=instance)
 		user_profile.save()
 

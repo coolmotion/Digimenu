@@ -28,12 +28,12 @@
     </h3>
     <p class="px-2 mt-1 text-xs text-gray-500">{{product.description}}</p>
     <h4 class="font-semibold text-sm text-gray-600 mt-2 mx-2">Price</h4>
-    <div class="text-xs text-gray-500 pt-2 border-t border-indigo-300 ">
+    <div class="text-xs text-gray-500 pt-2 border-t border-red-300 ">
       {% for portion in product.portions.all %} 
-      <div class="my-1  px-1 border-b border-indigo-200 bg-white p-1 rounded-lg justify-between">
+      <div class="my-1  px-1 border-b border-red-200 bg-white p-1 rounded-lg justify-between">
         <div class="flex flex-row justify-between items-center">
           <P class="text-left font-bold text-gray-500 text-sm">{{portion.name}} portion</P>
-          <P class="text-right text-lg text-indigo-500">Rs {{portion.price}}</P>
+          <P class="text-right text-lg text-red-500">Rs {{portion.price}}</P>
         </div>
         <div class="w-full flex flex-row items-center justify-between">
           <div class="text-left text-gray-500 text-xs">Quantity:</div>
@@ -52,7 +52,7 @@
     </div>
 
     <div class="flex flex-row justify-start py-4">
-      <a href="{% url 'summary' resturant_id=resturant.id %}" value="{{product.id}}" class="py-1 px-2.5 justify-center items-center font-bold rounded-xl bg-indigo-500 text-gray-100 mr-4">Checkout</a>
+      <a href="{% url 'summary' resturant_id=resturant.id %}" value="{{product.id}}" class="py-1 px-2.5 justify-center items-center font-bold rounded-xl bg-red-500 text-gray-100 mr-4">Checkout</a>
       <a href="{% url 'menuhome' resturant.id %}"  value="{{product.id}}" class="py-1 px-2.5 justify-center items-center text-sm rounded-xl bg-gray-200 text-black mr-4">Add more items</a>
 
     </div> 

@@ -14,12 +14,12 @@
         </h3>
         <p class="px-2 mt-1 text-xs text-gray-500">{{product.description}}</p>
         <h4 class="font-semibold text-sm text-gray-600 mt-2 mx-2">Price</h4>
-        <div class=" border-t border-indigo-300 mx-2">
+        <div class=" border-t border-red-300 mx-2">
           <div class="justify-between items-center my-2">
             {% for portion in product.portions.all %}
               <div class="flex justify-between items-end text-gray-500">
                 <p class="text-xs">{{ portion.name }}</p>
-                <p class="text-indigo-500 text-xs">Rs {{ portion.price }}</p>
+                <p class="text-red-500 text-xs">Rs {{ portion.price }}</p>
               </div>
             {% empty %}
               <p>No portions available.</p>
@@ -27,7 +27,7 @@
                   </div>
         </div>
         <div class="flex flex-row justify-end mx-1">
-          <a href="{% url 'product' resturant.id product.id %}" class="bg-indigo-500 text-gray-100 px-2 py-1 rounded-xl text-sm font-bold">Order now</span></a>
+          <a href="{% url 'product' resturant.id product.id %}" class="bg-red-500 text-gray-100 px-2 py-1 rounded-xl text-sm font-bold">Order now</span></a>
         </div>  
       </li>
       {% endfor %}
