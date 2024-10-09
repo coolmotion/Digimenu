@@ -52,8 +52,8 @@
           <div class="flex flex-col">
             <p>Rs {{cart_product.price}}<span class="text-xs text-gray-500"> /price per item</span></p>
             <div class="flex space-x-4 font-semibold text-xs">
-              <button type="button" data-index="{{cart_product.id}}"  class="update-cart bg-indigo-500 rounded-lg px-2 py-1 text-gray-100">Update</button>
-              <button data-index="{{cart_product.id}}" class="delete-product bg-indigo-500 rounded-lg px-2 py-1 text-gray-100" >Delete</button>
+              <button type="button" data-index="{{cart_product.id}}"  class="update-cart bg-red-500 rounded-lg px-2 py-1 text-gray-100">Update</button>
+              <button data-index="{{cart_product.id}}" class="delete-product bg-red-500 rounded-lg px-2 py-1 text-gray-100" >Delete</button>
             </div>
           </div>
         </div>
@@ -89,7 +89,7 @@
         <form method="post" action="{% url 'process_order'  resturant_id=resturant.id %}">
           {% csrf_token %}
           <input type="number" required id="phone" name="phone" min`="0" placeholder="Enter your phone number" class="px-2 py-1 rounded-lg mt-1 block w-full">
-          <button type="submit" class="mt-4 bg-indigo-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-xl">Order</button>
+          <button type="submit" class="mt-4 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-xl">Order</button>
       </form>
       </div>
     </div>

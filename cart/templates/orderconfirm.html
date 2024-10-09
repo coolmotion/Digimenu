@@ -5,15 +5,13 @@
 <div class="grid bg-white py-8 place-items-center px-6 lg:px-8">
     <div class="text-center">
         <h1 class="text-3xl font-bold text-gray-900 sm:text-5xl">Order Confirmed</h1>
-        <p class="mt-4 text-base font-semibold text-indigo-600">Thank you for your order!</p>
+        <p class="mt-4 text-base font-semibold text-red-600">Thank you for your order!</p>
         <p class="mt-6 text-base leading-7 text-gray-600">
             Your order has been successfully placed.
         </p>
         <div class="text-left text-base leading-7 text-gray-600 mx-auto max-w-4xl text-sm p-5 bg-white ">
             <p class="">Order ID: <strong>{{ order.id }}</strong></p>
             <p class="">Total Paid: <strong>Rs{{ order.amount_paid|floatformat:2 }}</strong></p>
-            
-            <!-- Order Details Section -->
             <div class="mt-6">
                 <h2 class="text-lg font-semibold mb-2">Order Details:</h2>
                 <ul>
@@ -29,7 +27,7 @@
             
         </div>
         <div class="mt-10 flex items-center justify-center gap-x-6">
-            <a href="{% url 'menuhome' resturant.id %}" class="rounded-xl bg-indigo-600 px-2 py-1 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Go to Home</a>
+            <a href="{% url 'menuhome' resturant.id %}" class="rounded-xl bg-red-600 px-2 py-1 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600">Go to Home</a>
             <a href="#" class="text-sm font-semibold text-gray-900">Contact Support <span aria-hidden="true">&rarr;</span></a>
         </div>
     </div>

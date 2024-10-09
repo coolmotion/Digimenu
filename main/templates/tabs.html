@@ -1,17 +1,17 @@
 {% load static %}
-<div class="mt-3">
-  <div class="flex justify-start mx-3 ">
+<div class="mt-3 overflow-x-auto">
+  <div class="flex justify-start mx-3 space-x-2">
     <a href="{% url 'menuhome' resturant.id %}" 
-    class=" px-2 py-1 mx-1 text-sm font-bold rounded-xl text-black {% if active_view == 'all' %}
-    bg-gray-900 text-gray-100 {% else %} bg-gray-200
-    {% endif %}">All
+       class="px-2 py-1 text-sm font-bold rounded-xl text-black {% if active_view == 'all' %}bg-gray-900 text-gray-100{% else %}bg-gray-200{% endif %}">
+        All
     </a>
     {% for menu in menus %}
-    <a href="{% url 'menu' resturant.id menu.id %}" 
-       class=" px-2 py-1 mx-1 text-sm font-bold rounded-xl {% if menu.id == menu_id %}bg-gray-900 text-gray-100{% else %}bg-gray-200 text-black{% endif %}">
-        {{ menu.name }}   Menu 
-    </a>
+      <a href="{% url 'menu' resturant.id menu.id %}" 
+         class="px-2 py-1 text-sm font-bold rounded-xl {% if menu.id == menu_id %}bg-gray-900 text-gray-100{% else %}bg-gray-200 text-black{% endif %}">
+          {{ menu.name }} 
+      </a>
     {% endfor %}
   </div>
 </div>
+
 

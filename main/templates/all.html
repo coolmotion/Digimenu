@@ -3,30 +3,25 @@
 {% block content %}
 <div class=" justify-center my-3 mx-1 ">
   <div >
-    <ul  class="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-1">
+    <ul  class="grid grid-cols-2 md:grid-cols-4 lg::grid-cols-6">
       {% for product in products %}
-      <li class="flex-col m-2 bg-gray-100 rounded-3xl p-3">
-        <div class="h-24 w-120 h-48 flex-shrink-0 overflow-hidden ">
-          <img src="{{product.image.url}}" alt="{{product.name}}" class="h-full w-full object-cover rounded-2xl object-center">
-        </div>
-        <h3 class="text-gray-700 font-bold px-2">
+      <li class="flex-col m-2 bg-gray-100 rounded-3xl p-2">
+        <div class="h-auto flex-shrink-0 overflow-hidden ">
+          <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static 'img/placeholder-image.jpg' %}{% endif %}" 
+          alt="{{ product.name }}" 
+          class="w-full aspect-square object-cover rounded-2xl object-center">
+
+             </div>
+        <h3 class="text-gray-700 text-sm font-bold px-1">
           {{product.name}}
         </h3>
-        <p class="px-2 mt-1 text-xs text-gray-500">{{product.description}}</p>
-        <h4 class="font-semibold text-sm text-gray-600 mt-2 mx-2">Price</h4>
-        <div class=" border-t border-red-300 mx-2">
-          <div class="justify-between items-center my-2">
-            {% for portion in product.portions.all %}
-              <div class="flex justify-between items-end text-gray-500">
-                <p class="text-xs">{{ portion.name }}</p>
-                <p class="text-red-500 text-xs">Rs {{ portion.price }}</p>
-              </div>
-            {% empty %}
-              <p>No portions available.</p>
-            {% endfor %}
-                  </div>
+        {% with first_portion=product.portions.first %}
+        <div class="flex flex-row px-1 justify-start items-end text-gray-500">
+          <p class="text-gray-500 " style="font-size: xx-small;">starting at 
+          <span class="text-red-500 text-xs">Rs {{ first_portion.price }}</span></p>
         </div>
-        <div class="flex flex-row justify-end mx-1">
+        {% endwith %}
+        <div class="flex flex-row justify-start my-2 mx-1">
           <a href="{% url 'product' resturant.id product.id %}" class="bg-red-500 text-gray-100 px-2 py-1 rounded-xl text-sm font-bold">Order now</span></a>
         </div>  
       </li>
@@ -35,4 +30,31 @@
     </ul>
   </div>
 </div>
+<!-- Pagination Controls -->
+<div class="flex justify-center items-center text-sm my-3 space-x-2">
+  {% if products.has_previous %}
+      <a href="?page={{ products.previous_page_number }}{% if category_id %}&category_id={{ category_id }}{% endif %}"
+         class="px-3 py-1 bg-gray-200 text-gray-700 rounded hover:bg-gray-300">Previous</a>
+  {% else %}
+      <span class="px-3 py-1 bg-gray-200 text-gray-400 rounded cursor-not-allowed">Previous</span>
+  {% endif %}
+
+  {% for num in products.paginator.page_range %}
+      {% if products.number == num %}
+          <span class="px-3 py-1 bg-red-500 text-white rounded-full ">{{ num }}</span>
+      {% elif num > products.number|add:'-3' and num < products.number|add:'3' %}
+          <a href="?page={{ num }}{% if category_id %}&category_id={{ category_id }}{% endif %}"
+             class="px-3 py-1 bg-gray-200 text-gray-700 rounded-full hover:bg-gray-300">{{ num }}</a>
+      {% endif %}
+  {% endfor %}
+
+  {% if products.has_next %}
+      <a href="?page={{ products.next_page_number }}{% if category_id %}&category_id={{ category_id }}{% endif %}"
+         class="px-3 py-1 bg-gray-200 text-gray-700 rounded hover:bg-gray-300">Next</a>
+  {% else %}
+      <span class="px-3 py-1 bg-gray-200 text-gray-400 rounded cursor-not-allowed">Next</span>
+  {% endif %}
+</div>
+
+
 {% endblock %}

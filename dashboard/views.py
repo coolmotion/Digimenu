@@ -7,25 +7,22 @@ from main.models import Profile,Category, Product
 from cart.models import Order
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
-from .forms import ProductForm, PortionFormSet
+from .forms import ProductForm, PortionFormSet, PortionFormSetNoExtra
 import qrcode
 from io import BytesIO
 
 @login_required
 def dashboard(request, menu_id=None):
     profile = get_object_or_404(Profile, user=request.user)
-
-    menus = Category.objects.filter(user=profile.user)
-    # restaurant_image = profile.image if profile.image else "default_image_url.jpg"  # or use a default image URL
-    products = Product.objects.filter(menu__user=profile.user)
+    categories = Category.objects.filter(resturant=profile)
+    products = Product.objects.filter(menu__in=categories)
 
     context = {
         'profile': profile,
-        # 'restaurant_image': profile.image,
-        'menus': menus,  
+        'menus': categories,
         'products': products,  
     }
-    return render(request, 'dashboard.html', context )
+    return render(request, 'dashboard.html', context)
 
 @login_required
 def dashboard_menu(request, menu_id=None):
@@ -57,62 +54,34 @@ def dashboard_menu(request, menu_id=None):
 
 @login_required
 def product_info(request, product_id):
-    profile = get_object_or_404(Profile, user=request.user)
-    product = get_object_or_404(Product, id=product_id)
+    product = get_object_or_404(Product, id=product_id, resturant=request.user.profile)
+    portion_formset = PortionFormSetNoExtra(instance=product)
+    
     if request.method == 'POST':
-        form = ProductForm(request.POST, instance=product)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Your product was updated successfully.")
-            return redirect('dashboard')
-        else:
-            messages.error(request, "Please correct the errors below.")
+        print(request.POST)
+        # This view could be extended to allow editing if needed
+        product_form = ProductForm(request.POST, request.FILES, instance=product, user_profile=request.user.profile)
+        portion_formset = PortionFormSetNoExtra(request.POST, instance=product)
+        
+        if product_form.is_valid() and portion_formset.is_valid():
+            product_form.save()
+            portion_formset.save()
+            return redirect('dashboard')  # Redirect after saving
+
     else:
-        form = ProductForm(instance=product)
-
-    context = {
-        'profile': profile,
-        'name': product.name,
-        'description': product.description,
-        'menu': product.menu,
-        'price': '500',
-        'image': product.image
-    }
-
-    return render(request, 'product_info.html', context)
+        product_form = ProductForm(instance=product, user_profile=request.user.profile)
     
-# @login_required
-# def add_product(request):
+    return render(request, 'product_info.html', {
+        'product_form': product_form,
+        'portion_formset': portion_formset,
+    })
     
-#     menus = Category.objects.filter(user=request.user)
-#     profile = get_object_or_404(Profile, user=request.user)
-
-#     if not menus.exists():
-#         messages.error(request, "You need to create a menu before adding products.")
-#         return redirect('add_menu')
-
-#     if request.method == 'POST':
-#         name = request.POST.get('name')
-#         description = request.POST.get('description')
-#         price = request.POST.get('price')
-#         menu = request.POST.get('menu')
-#         image = request.FILES.get('image')  
-#         # try:
-#         new_product = Product(name=name, description=description, menu_id=menu, image=image)
-#         new_product.save()
-#         messages.success(request, "New product created successfully!")
-#         return redirect('product_info', product_id=new_product.id)
-#         # except:
-#         #     messages.error(request, "Please fill in all required fields.")
-
-#     return render(request, 'addproduct.html' , {'menus': menus, 'profile': profile,})
-
-
 @login_required
 def add_product(request):
     user_profile = Profile.objects.get(user=request.user)
     
     if request.method == 'POST':
+        print(request.POST)
         product_form = ProductForm(request.POST, request.FILES, user_profile=user_profile)
         portion_formset = PortionFormSet(request.POST)
         
@@ -120,13 +89,15 @@ def add_product(request):
             product = product_form.save(commit=False)
             product.resturant = user_profile
             product.save()
-            
+            print("Product saved:", product)
+
             portions = portion_formset.save(commit=False)
             for portion in portions:
                 portion.product = product
                 portion.save()
-                
-            return redirect('dashboard')  # Redirect to the product list or desired page after saving
+                print("Portion saved:", portion)
+
+        return redirect('dashboard')  # Redirect to the dashboard
             
     else:
         product_form = ProductForm(user_profile=user_profile)
@@ -199,16 +170,16 @@ def list_orders(request):
     restaurant = request.user.profile
     profile = get_object_or_404(Profile, user=request.user)
 
-    menus = Category.objects.filter(user=profile.user)
+    categories = Category.objects.filter(resturant=profile)
     # restaurant_image = profile.image if profile.image else "default_image_url.jpg"  # or use a default image URL
-    products = Product.objects.filter(menu__user=profile.user)
+    products = Product.objects.filter(menu__in=categories)
     orders = Order.objects.filter(resturant=restaurant).order_by('-date_ordered')
     context = {
         'restaurant': restaurant,
         'orders': orders,
         'profile': profile,
         # 'restaurant_image': profile.image,
-        'menus': menus,  
+        'menus': categories,  
     }
     return render(request, 'orders.html', context)
 

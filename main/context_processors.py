@@ -11,9 +11,10 @@ def resturant(request):
     resturant_id = request.resolver_match.kwargs.get('resturant_id', None)
     if resturant_id:
         profile = get_object_or_404(Profile, id=resturant_id)
-        menus = Menu.objects.filter(user=profile.user)
+        categories = Category.objects.filter(resturant=profile)
+        # products = Product.objects.filter(menu__in=categories)
         return {
-            'menus': menus,
+            'menus': categories,
             'resturant': profile,
         }
     return {}

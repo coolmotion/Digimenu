@@ -50,8 +50,8 @@
                       {% endfor %}</label> 
                   </div>                  
                   <div class="flex mt-3">
-                    <a href="{% url 'summary' resturant_id=resturant.id %}" type="button" class="font-medium text-indigo-600 hover:text-indigo-500">Edit</a>
-                    <button data-index="{{cart_product.id}}" class="delete-product font-medium text-indigo-600 hover:text-indigo-500 ml-4" >Delete</button>
+                    <a href="{% url 'summary' resturant_id=resturant.id %}" type="button" class="font-medium text-red-600 hover:text-red-500">Edit</a>
+                    <button data-index="{{cart_product.id}}" class="delete-product font-medium text-red-600 hover:text-red-500 ml-4" >Delete</button>
                   </div>
                 </div>
               </div>
@@ -69,12 +69,12 @@
       </div>
       <p class="mt-0.5 text-sm text-gray-500">Shipping and taxes calculated at checkout.</p>
       <div class="mt-6">
-        <a href="{% url 'summary' resturant_id=resturant.id %}" class="flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700">Proceed to Checkout</a>
+        <a href="{% url 'summary' resturant_id=resturant.id %}" class="flex items-center justify-center rounded-md border border-transparent bg-red-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-red-700">Proceed to Checkout</a>
       </div>
       <div class="mt-6 flex justify-center text-center text-sm text-gray-500">
         <p>
           or
-          <button type="button" id="" class="closeButton font-medium text-indigo-600 hover:text-indigo-500">
+          <button type="button" id="" class="closeButton font-medium text-red-600 hover:text-red-500">
             Add more items
             <span aria-hidden="true"> &rarr;</span>
           </button>
