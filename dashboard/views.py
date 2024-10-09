@@ -3,11 +3,11 @@ from django.contrib.auth import authenticate, logout
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
-from main.models import Profile,Menu, Product
+from main.models import Profile,Category, Product
 from cart.models import Order
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
-from .forms import ProductForm
+from .forms import ProductForm, PortionFormSet
 import qrcode
 from io import BytesIO
 
@@ -15,7 +15,7 @@ from io import BytesIO
 def dashboard(request, menu_id=None):
     profile = get_object_or_404(Profile, user=request.user)
 
-    menus = Menu.objects.filter(user=profile.user)
+    menus = Category.objects.filter(user=profile.user)
     # restaurant_image = profile.image if profile.image else "default_image_url.jpg"  # or use a default image URL
     products = Product.objects.filter(menu__user=profile.user)
 
@@ -31,7 +31,7 @@ def dashboard(request, menu_id=None):
 def dashboard_menu(request, menu_id=None):
     profile = get_object_or_404(Profile, user=request.user)
 
-    menus = Menu.objects.filter(user=profile.user)
+    menus = Category.objects.filter(user=profile.user)
     # restaurant_image = profile.image if profile.image else "default_image_url.jpg"  # or use a default image URL
 
     if menus.exists():
@@ -39,7 +39,7 @@ def dashboard_menu(request, menu_id=None):
             first_menu = menus.first()
             menu_id = first_menu.id
         
-        selected_menu = get_object_or_404(Menu, id=menu_id, user=profile.user)
+        selected_menu = get_object_or_404(Category, id=menu_id, user=profile.user)
         
         products = Product.objects.filter(menu=selected_menu)
     else:
@@ -81,63 +81,66 @@ def product_info(request, product_id):
 
     return render(request, 'product_info.html', context)
     
+# @login_required
+# def add_product(request):
+    
+#     menus = Category.objects.filter(user=request.user)
+#     profile = get_object_or_404(Profile, user=request.user)
+
+#     if not menus.exists():
+#         messages.error(request, "You need to create a menu before adding products.")
+#         return redirect('add_menu')
+
+#     if request.method == 'POST':
+#         name = request.POST.get('name')
+#         description = request.POST.get('description')
+#         price = request.POST.get('price')
+#         menu = request.POST.get('menu')
+#         image = request.FILES.get('image')  
+#         # try:
+#         new_product = Product(name=name, description=description, menu_id=menu, image=image)
+#         new_product.save()
+#         messages.success(request, "New product created successfully!")
+#         return redirect('product_info', product_id=new_product.id)
+#         # except:
+#         #     messages.error(request, "Please fill in all required fields.")
+
+#     return render(request, 'addproduct.html' , {'menus': menus, 'profile': profile,})
 
 
 @login_required
 def add_product(request):
-    menus = Menu.objects.filter(user=request.user)
-    profile = get_object_or_404(Profile, user=request.user)
-
-    if not menus.exists():
-        messages.error(request, "You need to create a menu before adding products.")
-
-        return redirect('add_menu')
-    if request.method == 'POST':
-        name = request.POST.get('name')
-        description = request.POST.get('description')
-        price = request.POST.get('price')
-        menu = request.POST.get('menu')
-        image = request.FILES.get('image')  # If you want to handle image uploads
-
-        if name and price and menu and description and image:  # Basic validation to check required fields
-            new_product = Product(
-                name=name,
-                description=description,
-                price=price,
-                menu_id=menu,  # Assuming menu is a ForeignKey
-                image=image  # Optional image field
-            )
-            new_product.save()
-            messages.success(request, "New product created successfully!")
-            return redirect('product_info', product_id=new_product.id)
-        else:
-            messages.error(request, "Please fill in all required fields.")
-    # messages.error(request, "This page is under construction.")
-    return render(request, 'addproduct.html' , {'menus': menus, 'profile': profile,})
-
-@login_required
-def add_menu(request):
-    profile = get_object_or_404(Profile, user=request.user)
-    menus = Menu.objects.filter(user=request.user)
-    if request.method == 'POST':
-        name = request.POST.get('name') 
-        if name:  
-            new_menu = Menu(
-                user=request.user,  
-                name=name
-            )
-            new_menu.save()
-            messages.success(request, "New menu created successfully!")
-            return redirect('dashboard')  
-        else:
-            messages.error(request, "Please provide a valid menu name.")
+    user_profile = Profile.objects.get(user=request.user)
     
-    return render(request, 'addmenu.html' , {'menus': menus ,'profile': profile})  
+    if request.method == 'POST':
+        product_form = ProductForm(request.POST, request.FILES, user_profile=user_profile)
+        portion_formset = PortionFormSet(request.POST)
+        
+        if product_form.is_valid() and portion_formset.is_valid():
+            product = product_form.save(commit=False)
+            product.resturant = user_profile
+            product.save()
+            
+            portions = portion_formset.save(commit=False)
+            for portion in portions:
+                portion.product = product
+                portion.save()
+                
+            return redirect('dashboard')  # Redirect to the product list or desired page after saving
+            
+    else:
+        product_form = ProductForm(user_profile=user_profile)
+        portion_formset = PortionFormSet()
+    
+    return render(request, 'add_product.html', {
+        'product_form': product_form,
+        'portion_formset': portion_formset,
+    })
 
 @login_required
 def change_menu(request, menu_id):
-    edit_menu = get_object_or_404(Menu, id=menu_id, user=request.user)  
-    menus = Menu.objects.filter(user=request.user)
+    edit_menu = get_object_or_404(Category, id=menu_id, user=request.user)  
+    menus = Category.objects.filter(user=request.user)
     profile = get_object_or_404(Profile, user=request.user)
 
     if request.method == 'POST':
@@ -155,7 +158,7 @@ def change_menu(request, menu_id):
 
 @login_required
 def delete_menu(request, menu_id):
-    menu = get_object_or_404(Menu, id=menu_id, user=request.user) 
+    menu = get_object_or_404(Category, id=menu_id, user=request.user) 
     if request.method == 'POST':
         menu.delete()
         messages.success(request, "Menu deleted successfully!")
@@ -196,7 +199,7 @@ def list_orders(request):
     restaurant = request.user.profile
     profile = get_object_or_404(Profile, user=request.user)
 
-    menus = Menu.objects.filter(user=profile.user)
+    menus = Category.objects.filter(user=profile.user)
     # restaurant_image = profile.image if profile.image else "default_image_url.jpg"  # or use a default image URL
     products = Product.objects.filter(menu__user=profile.user)
     orders = Order.objects.filter(resturant=restaurant).order_by('-date_ordered')
@@ -209,3 +212,21 @@ def list_orders(request):
     }
     return render(request, 'orders.html', context)
 
+@login_required
+def add_menu(request):
+    profile = get_object_or_404(Profile, user=request.user)
+    menus = Category.objects.filter(user=request.user)
+    if request.method == 'POST':
+        name = request.POST.get('name') 
+        if name:  
+            new_menu = Category(
+                user=request.user,  
+                name=name
+            )
+            new_menu.save()
+            messages.success(request, "New menu created successfully!")
+            return redirect('dashboard')  
+        else:
+            messages.error(request, "Please provide a valid menu name.")
+    
+    return render(request, 'addmenu.html' , {'menus': menus ,'profile': profile})  

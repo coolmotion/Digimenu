@@ -1,4 +1,4 @@
-from .models import Profile,Menu
+from .models import Profile, Category
 from django.shortcuts import get_object_or_404
 
 

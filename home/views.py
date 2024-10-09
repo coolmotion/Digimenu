@@ -9,7 +9,6 @@ from django import forms
 from .froms import SignUpForm
 from django.contrib.auth.decorators import login_required
 
-# Create your views here.
 def index(request):
     if request.user.is_authenticated:
         return redirect('dashboard') 
@@ -59,8 +58,8 @@ def signup(request):
                 messages.error(request, "Authentication failed, please try again.")
         else:
             for field, errors in form.errors.items():
-                if errors:  # Check if there are errors for the field
-                    first_error = errors[0]  # Get the first error
+                if errors:  
+                    first_error = errors[0]  
                     messages.error(request, f"{field.capitalize()}: {first_error}")
 
     return render(request, 'signup.html', {'form': form})
@@ -72,7 +71,6 @@ def signup_thanks(request):
 def user_info(request):
     # Get the existing Profile for the current user or create a new one if it doesn't exist
     profile = get_object_or_404(Profile, user=request.user)
-    
     if request.method == 'POST':
         # Update the profile fields with the data from the form
         profile.resturant_name = request.POST.get('restaurant_name', profile.resturant_name)
@@ -81,11 +79,9 @@ def user_info(request):
         profile.zipcode = request.POST.get('zip_code', profile.zipcode)
         profile.description = request.POST.get('description', profile.description)
         
-        # Handle file upload
         if 'restaurant_logo' in request.FILES:
             profile.image = request.FILES['restaurant_logo']
         
-        # Save the updated profile
         profile.save()
 
         return redirect('dashboard')

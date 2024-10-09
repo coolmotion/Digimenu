@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import Profile,Menu, Product, Portion
+from .models import Profile, Category, Product, Portion
 from django.http import HttpResponse
 from cart.cart import Cart
 from django.shortcuts import get_object_or_404

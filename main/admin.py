@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Menu, Product, Portion, Profile
+from .models import Category, Product, Portion, Profile
 from django.contrib.auth.models import User
 
 # Define an inline admin descriptor for Portion model
@@ -21,7 +21,7 @@ class MenuAdmin(admin.ModelAdmin):
     inlines = [ProductInline]
 
 # Register the Admin classes for Menu using the decorator
-admin.site.register(Menu, MenuAdmin)
+admin.site.register(Category, MenuAdmin)
 admin.site.register(Product, ProductAdmin)  # Updated registration
 
 # Mix profile info and user info
