@@ -3,6 +3,7 @@ from main.models import Portion, User, Profile
 
 class Order(models.Model):
 	phone = models.CharField(max_length=20, blank=True)
+	table_no = models.PositiveBigIntegerField(default=1, null=False)
 	amount_paid = models.DecimalField(max_digits=7, decimal_places=2)
 	date_ordered = models.DateTimeField(auto_now_add=True)
 	resturant = models.ForeignKey(Profile, on_delete=models.CASCADE)

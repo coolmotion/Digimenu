@@ -62,13 +62,14 @@ def cart_delete(request, resturant_id):
 @require_POST
 def process_order(request, resturant_id):
     phone_number = request.POST.get('phone')
+    table_no = request.POST.get('table_no')
     cart = Cart(request, app_id=resturant_id)
     quantities = cart.get_quants
     amount_paid = cart.cart_total(app_id=resturant_id)
     cart_portions = cart.get_prods
     resturant = Profile.objects.get(id=resturant_id)
 
-    create_order = Order(phone=phone_number, amount_paid=amount_paid, resturant=resturant)
+    create_order = Order(phone=phone_number, table_no=table_no, amount_paid=amount_paid, resturant=resturant)
     try:
         create_order.save()
         print(f"Order saved successfully for phone number: {phone_number}")

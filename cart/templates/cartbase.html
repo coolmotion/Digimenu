@@ -1,0 +1,26 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+    <link rel="icon" href="{% static 'favicon.png'}" type="image/x-icon">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <title>{{resturant.resturant_name}}</title>
+</head>
+<body class="bg-black">
+    <header>
+        {% include 'cartheader.html' %}
+    </header>
+    <main>
+    <div class="rounded-xl bg-white mt-3 flex flex-col justify-center w-full " style="margin-top: -20px;">
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    </main>
+        {% include 'mainfooter.html' %} 
+</body>
+</html>
