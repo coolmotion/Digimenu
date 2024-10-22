@@ -9,7 +9,9 @@ from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from .forms import ProductForm, PortionFormSet, PortionFormSetNoExtra
 import qrcode
+from django.core.paginator import Paginator
 from io import BytesIO
+from django.utils.timezone import now
 
 @login_required
 def dashboard(request, menu_id=None):
@@ -52,28 +54,58 @@ def dashboard_menu(request, menu_id=None):
     print(menu_id)
     return render(request, 'dashboard.html', context )
 
+
+# def product_info(request, product_id):
+#     product = get_object_or_404(Product, id=product_id, resturant=request.user.profile)
+    
+#     if request.method == 'POST':
+#         if 'product_form' in request.POST:
+#             product_form = ProductForm(request.POST, request.FILES, instance=product, user_profile=request.user.profile)
+#             if product_form.is_valid():
+#                 product_form.save()
+#                 messages.success(request, "Product details updated successfully.")
+#                 return redirect('product_info', product_id=product.id)
+#         elif 'portion_formset' in request.POST:
+#             portion_formset = PortionFormSetNoExtra(request.POST, instance=product)
+#             if portion_formset.is_valid():
+#                 portion_formset.save()
+#                 messages.success(request, "Portions updated successfully.")
+#                 return redirect('product_info', product_id=product.id)
+
+#     else:
+#         product_form = ProductForm(instance=product, user_profile=request.user.profile)
+#         portion_formset = PortionFormSetNoExtra(instance=product)
+
+#     return render(request, 'product_info.html', {
+#         'product_form': product_form,
+#         'portion_formset': portion_formset,
+#         'product': product
+#     })
 @login_required
 def product_info(request, product_id):
     product = get_object_or_404(Product, id=product_id, resturant=request.user.profile)
-    portion_formset = PortionFormSetNoExtra(instance=product)
     
     if request.method == 'POST':
-        print(request.POST)
-        # This view could be extended to allow editing if needed
-        product_form = ProductForm(request.POST, request.FILES, instance=product, user_profile=request.user.profile)
-        portion_formset = PortionFormSetNoExtra(request.POST, instance=product)
-        
-        if product_form.is_valid() and portion_formset.is_valid():
-            product_form.save()
-            portion_formset.save()
-            return redirect('dashboard')  # Redirect after saving
-
+        if 'submit_product' in request.POST:
+            product_form = ProductForm(request.POST, request.FILES, instance=product, user_profile=request.user.profile)
+            if product_form.is_valid():
+                product_form.save()
+                print('Product saved')
+                return redirect('dashboard')  # Redirect to avoid repost on refresh
+        elif 'submit_portion' in request.POST:
+            portion_formset = PortionFormSetNoExtra(request.POST, request.FILES, instance=product)
+            if portion_formset.is_valid():
+                portion_formset.save()
+                print('Portion saved')
+                return redirect('dashboard')  # Redirect to avoid repost on refresh
     else:
         product_form = ProductForm(instance=product, user_profile=request.user.profile)
-    
+        portion_formset = PortionFormSetNoExtra(instance=product)
+
     return render(request, 'product_info.html', {
         'product_form': product_form,
         'portion_formset': portion_formset,
+        'product': product
     })
     
 @login_required
@@ -171,14 +203,21 @@ def list_orders(request):
     profile = get_object_or_404(Profile, user=request.user)
 
     categories = Category.objects.filter(resturant=profile)
-    # restaurant_image = profile.image if profile.image else "default_image_url.jpg"  # or use a default image URL
     products = Product.objects.filter(menu__in=categories)
-    orders = Order.objects.filter(resturant=restaurant).order_by('-date_ordered')
+
+    # Filter orders by the current date
+    today = now().date()
+    orders_list = Order.objects.filter(resturant=restaurant, date_ordered__date=today).order_by('-date_ordered')
+
+    # Paginate the orders - 10 orders per page
+    paginator = Paginator(orders_list, 10)  # Show 10 orders per page
+    page_number = request.GET.get('page')
+    orders = paginator.get_page(page_number)
+
     context = {
         'restaurant': restaurant,
         'orders': orders,
         'profile': profile,
-        # 'restaurant_image': profile.image,
         'menus': categories,  
     }
     return render(request, 'orders.html', context)

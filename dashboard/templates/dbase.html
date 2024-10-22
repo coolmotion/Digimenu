@@ -17,6 +17,7 @@
     ></script>
     <script src="https://cdn.jsdelivr.net/npm/airplane@0.2.85/index.min.js"></script>
     <script src="{% static '/assets/js/init-alpine.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
   </head>
   <body>
     <div
@@ -30,38 +31,9 @@
       <div class="flex flex-col flex-1 w-full">
         {% include 'dheader.html' %}
         <main class="h-full overflow-y-auto">
-          <div class="container px-6 mx-auto grid">
-            <h2
-              class="my-6 text-2xl font-bold text-gray-700 dark:text-white"
-            >
-            {{ profile.resturant_name }} 
-            </h2>
+          <div class="container p-6 mx-auto grid">
             <!-- Cards -->
-            {% include 'dcards.html' %}
-            <div class="flex overflow-x-auto  mb-2 mx-1 justify-between">
-              <div class="flex ">
-                <div class="flex flex-col">
-                  <a class="{% if request.path == '/dashboard/' %}bg-gray-100 text-gray-700{% else %}bg-black text-gray-100{% endif %} font-bold text-sm rounded-xl px-3 py-1 mr-2" href="{% url 'dashboard' %}">
-                      All
-                  </a>
-                  {% if request.path == '/dashboard/' %}
-                      <hr class="h-0.5 mt-1 bg-indigo-500 border-0 mr-2 rounded">
-                  {% endif %}
-                </div>
-                {% for menu in menus %}
-                <div class="flex flex-col">
-                    <a class="{% if menu.id == selected_menu.id %}bg-gray-100 text-gray-700{% else %}bg-black text-gray-100{% endif %} font-bold text-sm rounded-xl px-3 py-1 mr-2" href="{% url 'dashboard_menu' menu_id=menu.id %}">
-                        {{ menu.name }}
-                    </a>
-                    {% if menu.id == selected_menu.id %}
-                        <hr class="h-0.5 mt-1 bg-indigo-500 border-0 mr-2 rounded">
-                    {% endif %}
-                </div>
-                {% endfor %}
-              </div>
-\
-              <a class="bg-indigo-500 text-white rounded-xl mb-2 px-3 py-1" href="{% url 'add_menu' %}"> + </a>
-            </div>
+            
             <!-- New Table -->
             {% block content %}
             {% endblock %}
