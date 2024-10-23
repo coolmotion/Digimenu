@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Product</title>
+</head>
+<body>
+    <h1>Add Product</h1>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ product_form.as_p }}
+        
+        <h2>Portions</h2>
+        {{ portion_formset.management_form }}
+        <div id="portion-forms">
+            {% for form in portion_formset %}
+                <div class="portion-form">
+                    {{ form.as_p }}
+                </div>
+            {% endfor %}
+        </div>
+        <button type="button" id="add-portion">Add Another Portion</button>
+        
+        <button type="submit">Add Product</button>
+    </form>
+
+    <script>
+        // JavaScript to dynamically add portion forms
+        document.getElementById('add-portion').addEventListener('click', function() {
+            const portionForms = document.getElementById('portion-forms');
+            const newForm = portionForms.children[0].cloneNode(true);
+            const totalForms = document.querySelectorAll('.portion-form').length;
+            newForm.querySelectorAll('input').forEach(input => {
+                const name = input.getAttribute('name').replace(/-\d+-/, `-${totalForms}-`);
+                input.setAttribute('name', name);
+                input.value = '';
+            });
+            portionForms.appendChild(newForm);
+            document.querySelector('input[name="portion-TOTAL_FORMS"]').value = totalForms + 1;
+        });
+    </script>
+</body>
+</html>

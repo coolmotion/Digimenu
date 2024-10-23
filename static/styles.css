@@ -41,5 +41,5 @@ input{
     color: rgb(156 163 175) !important;
     background-color:  rgb(24 24 27);
     border-radius: 9999px;
-    padding:0 10px !important; /* Adds padding on the left side of the text */
+    padding:5px 10px !important; /* Adds padding on the left side of the text */
 }

@@ -18,7 +18,7 @@ PortionFormSet = inlineformset_factory(
     Product,
     Portion,
     fields=['name', 'price', 'size'],
-    extra=2,  
+    extra=1,  
     can_delete=True # Allow users to delete a portion if needed
 )
 

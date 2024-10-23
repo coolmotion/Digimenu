@@ -27,11 +27,8 @@
                         {{ form.as_p }}
                     </div>
                 {% empty %}
-                    <!-- Empty form template for cloning when there are no portion forms -->
-                    <div class="portion-form" id="portion-template" style="display: none;">
-                        {% for field in portion_formset.empty_form %}
-                            {{ field.as_p }}
-                        {% endfor %}
+                    <div class="portion-form" id="portion-template" >
+                        {{ form.as_p }}
                     </div>
                 {% endfor %}
             </div>
@@ -53,8 +50,9 @@
         } else {
             // Otherwise, clone the template form
             newForm = document.getElementById('portion-template').cloneNode(true);
-            newForm.style.display = '';  // Show the cloned template
-            newForm.id = '';  // Remove the template ID to avoid duplicates
+            newForm.id = '';  
+            newForm.style.display = 'block'; // Show the cloned template
+            
         }
 
         // Update form field names and clear values
