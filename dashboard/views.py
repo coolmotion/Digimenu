@@ -18,27 +18,28 @@ def dashboard(request, menu_id=None):
     profile = get_object_or_404(Profile, user=request.user)
     categories = Category.objects.filter(resturant=profile)
     products = Product.objects.filter(menu__in=categories)
-
     context = {
         'profile': profile,
         'menus': categories,
-        'products': products,  
+        'products': products, 
+        'title': 'Dashboard' 
     }
     return render(request, 'dashboard.html', context)
 
 @login_required
-def dashboard_menu(request, menu_id=None):
+def menu_products(request, menu_id=None):
     profile = get_object_or_404(Profile, user=request.user)
 
-    menus = Category.objects.filter(user=profile.user)
+    categories = Category.objects.filter(resturant=profile)
+
     # restaurant_image = profile.image if profile.image else "default_image_url.jpg"  # or use a default image URL
 
-    if menus.exists():
+    if categories.exists():
         if menu_id is None:
-            first_menu = menus.first()
+            first_menu = categories.first()
             menu_id = first_menu.id
         
-        selected_menu = get_object_or_404(Category, id=menu_id, user=profile.user)
+        selected_menu = get_object_or_404(Category, id=menu_id)
         
         products = Product.objects.filter(menu=selected_menu)
     else:
@@ -47,40 +48,13 @@ def dashboard_menu(request, menu_id=None):
 
     context = {
         'profile': profile,
-        'menus': menus,  
+        'menus': categories,  
         'selected_menu': selected_menu,  
         'products': products,  
     }
     print(menu_id)
     return render(request, 'dashboard.html', context )
 
-
-# def product_info(request, product_id):
-#     product = get_object_or_404(Product, id=product_id, resturant=request.user.profile)
-    
-#     if request.method == 'POST':
-#         if 'product_form' in request.POST:
-#             product_form = ProductForm(request.POST, request.FILES, instance=product, user_profile=request.user.profile)
-#             if product_form.is_valid():
-#                 product_form.save()
-#                 messages.success(request, "Product details updated successfully.")
-#                 return redirect('product_info', product_id=product.id)
-#         elif 'portion_formset' in request.POST:
-#             portion_formset = PortionFormSetNoExtra(request.POST, instance=product)
-#             if portion_formset.is_valid():
-#                 portion_formset.save()
-#                 messages.success(request, "Portions updated successfully.")
-#                 return redirect('product_info', product_id=product.id)
-
-#     else:
-#         product_form = ProductForm(instance=product, user_profile=request.user.profile)
-#         portion_formset = PortionFormSetNoExtra(instance=product)
-
-#     return render(request, 'product_info.html', {
-#         'product_form': product_form,
-#         'portion_formset': portion_formset,
-#         'product': product
-#     })
 @login_required
 def product_info(request, product_id):
     product = get_object_or_404(Product, id=product_id, resturant=request.user.profile)
@@ -161,7 +135,7 @@ def change_menu(request, menu_id):
 
 @login_required
 def delete_menu(request, menu_id):
-    menu = get_object_or_404(Category, id=menu_id, user=request.user) 
+    menu = get_object_or_404(Category, id=menu_id) 
     if request.method == 'POST':
         menu.delete()
         messages.success(request, "Menu deleted successfully!")
@@ -225,18 +199,15 @@ def list_orders(request):
 @login_required
 def add_menu(request):
     profile = get_object_or_404(Profile, user=request.user)
-    menus = Category.objects.filter(user=request.user)
+    categories = Category.objects.filter(resturant=profile)
     if request.method == 'POST':
         name = request.POST.get('name') 
         if name:  
-            new_menu = Category(
-                user=request.user,  
-                name=name
-            )
+            new_menu = Category(resturant=profile,  name=name)
             new_menu.save()
             messages.success(request, "New menu created successfully!")
             return redirect('dashboard')  
         else:
             messages.error(request, "Please provide a valid menu name.")
     
-    return render(request, 'addmenu.html' , {'menus': menus ,'profile': profile})  
+    return render(request, 'addmenu.html' , {'menus': categories ,'profile': profile})  

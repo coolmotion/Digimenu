@@ -1,8 +1,8 @@
 <header class="z-10 py-4 bg-white shadow-md dark:bg-black ">
     <div
-      class="container flex items-center justify-end h-full px-6 mx-auto text-indigo-600 dark:text-indigo-300"
+      class="container flex items-center justify-between h-full px-6 mx-auto text-indigo-600 dark:text-indigo-300"
     >
-      <!-- Mobile hamburger -->
+    <h1 class="text-2xl font-bold text-white">{{title}}</h1>
       <button
         class="p-1 mr-5 -ml-1 rounded-md md:hidden focus:outline-none focus:shadow-outline-indigo"
         @click="toggleSideMenu"
@@ -21,7 +21,6 @@
           ></path>
         </svg>
       </button>
-      <!-- Search input -->
       
       <ul class="flex items-center flex-shrink-0 space-x-6">
         <!-- Profile menu -->

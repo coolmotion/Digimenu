@@ -10,7 +10,7 @@
     </div>
     {% for menu in menus %}
     <div class="flex flex-col">
-        <a class="{% if menu.id == selected_menu.id %}bg-gray-100 text-gray-700{% else %}bg-black text-gray-100{% endif %} font-bold text-sm rounded-xl px-3 py-1 mr-2" href="{% url 'dashboard_menu' menu_id=menu.id %}">
+        <a class="{% if menu.id == selected_menu.id %}bg-gray-100 text-gray-700{% else %}bg-black text-gray-100{% endif %} font-bold text-sm rounded-xl px-3 py-1 mr-2" href="{% url 'menu_products' menu_id=menu.id %}">
             {{ menu.name }}
         </a>
         {% if menu.id == selected_menu.id %}
