@@ -14,6 +14,7 @@
           <th class="px-4 py-3">Amount Paid</th>
           <th class="px-4 py-3">Ordered Time</th>
           <th class="px-4 py-3">Items</th>
+          <th class="px-4 py-3">Actions</th>
         </tr>
       </thead>
       <tbody
@@ -35,6 +36,10 @@
                 <li>No items found.</li>
               {% endfor %}
             </ul>
+          </td>
+          <td class="px-4 py-3 text-xs flex flex-row">
+            <a class="bg-white rounded-xl font-bold text-black px-2 py-0.5">Approve</a>
+            <a class="bg-red-500 rounded-xl ml-2 font-bold text-white px-2 py-0.5">Delete</a>
           </td>
         </tr>
       {% endfor %}
