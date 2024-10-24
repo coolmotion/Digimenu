@@ -30,6 +30,24 @@ def dashboard(request, menu_id=None):
     return render(request, 'dashboard.html', context)
 
 @login_required
+def products(request, menu_id=None):
+    profile = get_object_or_404(Profile, user=request.user)
+    categories = Category.objects.filter(resturant=profile)
+    product_list = Product.objects.filter(menu__in=categories).order_by('name')
+
+    paginator = Paginator(product_list, 10)  
+    page_number = request.GET.get('page')
+    products = paginator.get_page(page_number)
+
+    context = {
+        'profile': profile,
+        'menus': categories,
+        'products': products, 
+        'title': 'Products' 
+    }
+    return render(request, 'products.html', context)
+
+@login_required
 def menu_products(request, menu_id=None):
     profile = get_object_or_404(Profile, user=request.user)
     categories = Category.objects.filter(resturant=profile)

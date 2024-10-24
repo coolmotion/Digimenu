@@ -1,10 +1,10 @@
-<div class="flex overflow-x-auto  mb-2 mx-1 justify-between">
+<div class="flex overflow-x-auto mb-1 mx-1 justify-between">
   <div class="flex ">
     <div class="flex flex-col">
-      <a class="{% if request.path == '/dashboard/' %}bg-gray-100 text-gray-700{% else %}bg-black text-gray-100{% endif %} font-bold text-sm rounded-xl px-3 py-1 mr-2" href="{% url 'dashboard' %}">
+      <a class="{% if request.path == '/dashboard/products/' %}bg-gray-100 text-gray-700{% else %}bg-black text-gray-100{% endif %} font-bold text-sm rounded-xl px-3 py-1 mr-2" href="{% url 'dashboard' %}">
           All
       </a>
-      {% if request.path == '/dashboard/' %}
+      {% if request.path == '/dashboard/products/' %}
           <hr class="h-0.5 mt-1 bg-indigo-500 border-0 mr-2 rounded">
       {% endif %}
     </div>

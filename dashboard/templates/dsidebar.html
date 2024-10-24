@@ -16,7 +16,7 @@
           aria-hidden="true"
         ></span> -->
         <a
-          class="inline-flex items-center w-full text-sm font-semibold text-blabg-black transition-colors duration-150 hover:text-blabg-black dark:hover:text-gray-200 dark:text-gray-100"
+          class="inline-flex items-center w-full text-sm font-semibold transition-colors duration-150 hover:text-blabg-black {% if request.path == '/dashboard/' %} text-white {% endif %} "
           href="{% url 'dashboard' %}"
         >
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
@@ -29,7 +29,7 @@
     <ul>
       <li class="relative px-6 py-3">
         <a
-          class="inline-flex items-center w-full text-sm font-semibold transition-colors duration-150 hover:text-blabg-black dark:hover:text-gray-200"
+          class="inline-flex items-center w-full text-sm font-semibold transition-colors duration-150 hover:text-blabg-black dark:hover:text-gray-200 {% if request.path == '/dashboard/orders/' %} text-white {% endif %}"
           href="{% url 'orders' %}"
         >
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
@@ -41,8 +41,8 @@
       </li>
       <li class="relative px-6 py-3">
         <a
-          class="inline-flex items-center w-full text-sm font-semibold transition-colors duration-150 hover:text-blabg-black dark:hover:text-gray-200"
-          href="{% url 'dashboard' %}"
+          class="inline-flex items-center w-full text-sm font-semibold transition-colors duration-150 hover:text-blabg-black dark:hover:text-gray-200 {% if request.path == '/dashboard/products/' %} text-white {% endif %}"
+          href="{% url 'products' %}"
         >
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
           <path stroke-linecap="round" stroke-linejoin="round" d="M15 9h3.75M15 12h3.75M15 15h3.75M4.5 19.5h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Zm6-10.125a1.875 1.875 0 1 1-3.75 0 1.875 1.875 0 0 1 3.75 0Zm1.294 6.336a6.721 6.721 0 0 1-3.17.789 6.721 6.721 0 0 1-3.168-.789 3.376 3.376 0 0 1 6.338 0Z" />
@@ -78,14 +78,14 @@
     </ul>
     <div class="px-6 my-6">
       <a
-        class="flex items-center justify-between w-full font-bold px-4 py-2 text-sm text-white transition-colors duration-150 bg-indigo-600 border border-transparent rounded-lg active:bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:shadow-outline-indigo" href="{% url 'menuhome' profile.id %}"
+        class="flex items-center justify-between w-full font-bold px-4 py-2 text-sm text-white transition-colors duration-150 bg-indigo-500 border border-transparent rounded-lg active:bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:shadow-outline-indigo" href="{% url 'menuhome' profile.id %}"
       >
         View my Menu
         <span class="ml-2" aria-hidden="true"></span>
       </a>
     </div>
     <div class="text-gray-500 text-left text-xs px-6 mt-auto">
-      powered by <span class="font-bold text-gray-400">© 2024 Digimenu </span>
+      powered by <a class="font-bold text-gray-400" href="https://digimenu.lk">© 2024 Digimenu </a>
       <div class="flex-row ">
         <a href="/terms-service" class="text-indigo-400 hover:text-indigo-600">Terms of Service</a> |
         <a href="/contact-us" class="text-indigo-400 hover:text-indigo-600">Contact Us</a>

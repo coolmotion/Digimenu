@@ -13,7 +13,7 @@
                 {% csrf_token %}
                 {{ product_form.as_p }}
             </div>
-            <button type="submit" name="submit_product">Update Product</button>
+            <button type="submit" class="bg-indigo-500 text-sm font-bold text-white rounded-xl mt-4 px-2 py-1" name="submit_product">Update Product</button>
         </form>
     </div>
     <div>
@@ -32,8 +32,8 @@
                     </div>
                 {% endfor %}
             </div>
-            <button type="button" id="add-portion">Add Another Portion</button>
-            <button type="submit" name="submit_portion">Update Product</button>
+            <button type="button" class="bg-indigo-500 text-sm font-bold text-white rounded-xl mt-4 px-2 py-1 mr-3" id="add-portion">Add Portion</button>
+            <button type="submit" class="bg-indigo-500 text-sm font-bold text-white rounded-xl mt-4 px-2 py-1" name="submit_portion">Update Portions</button>
         </form>
     </div>
 </div>
