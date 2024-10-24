@@ -40,7 +40,7 @@ class Product(models.Model):
     description = models.CharField(max_length=250, default='0', blank=True, null=True)
     image = models.ImageField(upload_to='uploads/product/', blank=True, null=True)
     stock = models.IntegerField(default=0)
-    is_available = models.BooleanField(default=True)  # Field to track product availability
+    is_available = models.BooleanField(default=True)  
 
     def __str__(self):
         return f"{self.resturant.resturant_name} - {self.name}"

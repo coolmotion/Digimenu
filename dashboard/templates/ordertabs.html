@@ -1,0 +1,21 @@
+<div class="flex overflow-x-auto  mb-2 mx-1 justify-between">
+  <div class="flex ">
+    <div class="flex flex-col">
+      <a class="{% if request.path == '/dashboard/orders/' %}bg-gray-100 text-gray-700{% else %}bg-black text-gray-100{% endif %} font-bold text-sm rounded-xl px-3 py-1 mr-2" href="{% url 'orders' %}">
+          Pending
+      </a>
+      {% if request.path == '/dashboard/orders/' %}
+          <hr class="h-0.5 mt-1 bg-indigo-500 border-0 mr-2 rounded">
+      {% endif %}
+    </div>
+    <div class="flex flex-col">
+        <a class="{% if request.path == '/dashboard/orders/approved/' %} bg-gray-100 text-gray-700 {% else %}bg-black text-gray-100 {% endif %} font-bold text-sm rounded-xl px-3 py-1 mr-2" href="{% url 'approved' %}">
+          Approved
+        </a>
+        {% if request.path == '/dashboard/orders/approved/' %}
+            <hr class="h-0.5 mt-1 bg-indigo-500 border-0 mr-2 rounded">
+        {% endif %}
+    </div>
+  </div>
+  <a class="bg-indigo-500 font-bold text-sm rounded-xl px-3 py-1 mr-2 mb-2 text-white" href="#"> Add order </a>
+</div>

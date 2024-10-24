@@ -1,6 +1,7 @@
 {% extends 'dbase.html' %}
 {% load static %}
 {% block content %}
+{% include 'ordertabs.html' %}
 <div class="w-full overflow-hidden rounded-lg shadow-xs mb-6">
   <div class="w-full overflow-x-auto">
     <table class="w-full whitespace-no-wrap">
@@ -11,7 +12,7 @@
           <th class="px-4 py-3 w-6">ID</th>
           <th class="px-4 py-3">Phone</th>
           <th class="px-4 py-3">Table</th>
-          <th class="px-4 py-3">Amount Paid</th>
+          <th class="px-4 py-3">Amount </th>
           <th class="px-4 py-3">Ordered Time</th>
           <th class="px-4 py-3">Items</th>
           <th class="px-4 py-3">Actions</th>
@@ -22,13 +23,13 @@
       >
       {% if orders %}
       {% for order in orders %}
-        <tr class="text-gray-700 dark:text-gray-400">
-          <td class="px-4 py-3 text-sm">{{ order.id }}</td>
-          <td class="px-4 py-3 text-sm">{{ order.phone }}</td>
-          <td class="px-4 py-3 text-sm">{{ order.table_no }}</td>
-          <td class="px-4 py-3 text-sm">Rs {{ order.amount_paid }}</td>
-          <td class="px-4 py-3 text-sm">{{ order.date_ordered|date:"H:i d M" }}</td>
-          <td class="px-4 py-3 text-sm">
+        <tr class="text-gray-700 dark:text-gray-400 ">
+          <td class="px-4 py-3 text-sm align-top text-left">{{ order.id }}</td>
+          <td class="px-4 py-3 text-sm align-top text-left">{{ order.phone }}</td>
+          <td class="px-4 py-3 text-sm align-top text-left">{{ order.table_no }}</td>
+          <td class="px-4 py-3 text-sm align-top text-left">Rs {{ order.amount_paid }}</td>
+          <td class="px-4 py-3 text-sm align-top text-left">{{ order.date_ordered|date:"H:i d M" }}</td>
+          <td class="px-4 py-3 text-sm align-top text-left">
             <ul>
               {% for item in order.orderitem_set.all %}
                 <li>{{ item.portion.name }} - Quantity: {{ item.quantity }}, Price: Rs {{ item.price }}</li>
@@ -38,17 +39,25 @@
             </ul>
           </td>
           <td class="px-4 py-3 text-xs flex flex-row">
-            <a class="bg-white rounded-xl font-bold text-black px-2 py-0.5">Approve</a>
-            <a class="bg-red-500 rounded-xl ml-2 font-bold text-white px-2 py-0.5">Delete</a>
+            <form method="post">
+              {% csrf_token %}
+              {% if request.path == '/dashboard/orders/' %}
+              <button type="submit" name="approve_order" value="{{ order.id }}" class="bg-white rounded-xl font-bold text-black px-2 py-0.5">Approve</button>
+              {% endif %}
+              {% if request.path == '/dashboard/orders/approved/' %}
+              <button type="submit" name="reject_order" value="{{ order.id }}" class="bg-white rounded-xl font-bold text-red-500 px-2 py-0.5">Reject</button>
+              {% endif %}
+              <button type="submit" name="delete_order" value="{{ order.id }}" class="bg-red-500 rounded-xl ml-2 font-bold text-white px-2 py-0.5">Delete</button>
+            </form>
           </td>
         </tr>
       {% endfor %}
       {% else %}
-      <tr>
-        <td colspan="5" class="text-center py-4 text-gray-600 dark:text-gray-400">
-          No orders found.
-        </td>
-      </tr>
+        <tr>
+          <td colspan="7" class="text-center py-4 text-gray-600">
+            No orders found.
+          </td>
+        </tr>
       {% endif %}
       
       </tbody>

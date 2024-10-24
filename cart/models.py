@@ -7,6 +7,7 @@ class Order(models.Model):
 	amount_paid = models.DecimalField(max_digits=7, decimal_places=2)
 	date_ordered = models.DateTimeField(auto_now_add=True)
 	resturant = models.ForeignKey(Profile, on_delete=models.CASCADE)
+	approval = models.BooleanField(default=False)
 
 	def __str__(self):
 		return f'Order - {str(self.phone)} id:{str(self.id)}'

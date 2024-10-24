@@ -179,12 +179,50 @@ def generate_qr_code(request, resturant_id):
 
 
 @login_required
-def list_orders(request):
-
+def pending(request):
+    if request.method == 'POST':
+            order_id = request.POST.get('approve_order') or request.POST.get('delete_order')
+            order = get_object_or_404(Order, id=order_id)
+            
+            if 'approve_order' in request.POST:
+                order.approval = True
+                order.save()
+                messages.success(request, "Order approved successfully!")
+            elif 'delete_order' in request.POST:
+                order.delete()
+                messages.success(request, "Order deleted successfully!")
+        
     profile = get_object_or_404(Profile, user=request.user)
-
     today = now().date()
-    orders_list = Order.objects.filter(resturant=profile, date_ordered__date=today).order_by('-date_ordered')
+    orders_list = Order.objects.filter(resturant=profile, date_ordered__date=today, approval=False).order_by('date_ordered')
+
+    paginator = Paginator(orders_list, 10)  
+    page_number = request.GET.get('page')
+    orders = paginator.get_page(page_number)
+
+    context = {
+        'orders': orders,
+        'title': 'Orders'  
+    }
+    return render(request, 'orders.html', context)
+
+@login_required
+def approved(request):
+    if request.method == 'POST':
+            order_id = request.POST.get('reject_order') or request.POST.get('delete_order')
+            order = get_object_or_404(Order, id=order_id)
+            
+            if 'reject_order' in request.POST:
+                order.approval = False
+                order.save()
+                messages.success(request, "Order rejected successfully!")
+            elif 'delete_order' in request.POST:
+                order.delete()
+                messages.success(request, "Order deleted successfully!")
+        
+    profile = get_object_or_404(Profile, user=request.user)
+    today = now().date()
+    orders_list = Order.objects.filter(resturant=profile, date_ordered__date=today, approval=True).order_by('date_ordered')
 
     paginator = Paginator(orders_list, 10)  
     page_number = request.GET.get('page')
